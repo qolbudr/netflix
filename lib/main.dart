@@ -1,0 +1,73 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:netflix/constant.dart';
+import 'package:netflix/presentation/pages/root.dart';
+import 'package:netflix/injection.dart' as di;
+import 'package:netflix/presentation/provider/home_provider.dart';
+import 'package:provider/provider.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  di.init();
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => di.locator<HomeProvider>()),
+      ],
+      child: MaterialApp(
+        title: 'Netflix',
+        debugShowCheckedModeBanner: false,
+        theme: themeData,
+        home: const SplashScreen(),
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case '/root':
+              return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
+            
+            default: 
+              return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
+          }
+        }
+      ),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+      const Duration(milliseconds: 5000),
+      () => Navigator.pushReplacementNamed(context, '/root')
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: bgColor,
+      body: Center(
+        child: Lottie.network(
+          animate: true,
+          'https://assets5.lottiefiles.com/private_files/lf30_F6EtR7.json',
+          width: 200,
+        ),
+      ),
+    );
+  }
+}
