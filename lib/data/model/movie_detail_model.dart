@@ -104,7 +104,7 @@ class MovieDetailModel {
     tagline = json['tagline'];
     title = json['title'];
     video = json['video'];
-    voteAverage = json['vote_average'];
+    voteAverage = double.parse(json['vote_average'].toString());
     voteCount = json['vote_count'];
     videos =
         json['videos'] != null ? new Videos.fromJson(json['videos']) : null;

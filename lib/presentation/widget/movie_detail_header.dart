@@ -20,7 +20,7 @@ class MovieDetailHeader extends StatelessWidget {
           child: SizedBox(
             width: 200,
             child: Text(
-              data.title ?? data.name!,
+              data.season == null ? data.title! : '${data.name} - Season ${data.season}',
               style: const TextStyle(fontSize: 16),
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,

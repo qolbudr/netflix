@@ -7,8 +7,11 @@ import 'package:netflix/presentation/provider/detail_provider.dart';
 import 'package:netflix/presentation/widget/media_section.dart';
 import 'package:netflix/presentation/widget/movie_detail_header.dart';
 import 'package:netflix/presentation/widget/movie_info.dart';
+import 'package:netflix/presentation/widget/movie_summary.dart';
 import 'package:netflix/presentation/widget/trailer_section.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:remixicon/remixicon.dart';
 
 class Detail extends StatefulWidget {
   const Detail({super.key, required this.data});
@@ -19,84 +22,150 @@ class Detail extends StatefulWidget {
 }
 
 class _DetailState extends State<Detail> {
+  String? _url;
+  InAppWebViewController? _webViewController;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      Provider.of<DetailProvider>(context, listen: false).getMovieDetail(widget.data.id!);
+      Provider.of<DetailProvider>(context, listen: false).getMovieDetail(widget.data.id!, widget.data.mediaType!);
     });
   }
+
+  void _closePlayer() {
+    setState(() {
+      _url = null;
+    });
+  }
+
+  void _play(String url) {
+    setState(() {
+      if(_url == null) {
+        _url = url;
+      } else {
+        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
+      }
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Builder(
-        builder: (context) {
-          return Consumer<DetailProvider>(
-            builder: (_, dp, __) {
-              if(dp.isLoading == true) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                return Stack(
+      body: Consumer<DetailProvider>(
+        builder: (_, dp, __) {
+          if(dp.isLoading == true) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Stack(
+              children: [
+                ListView(
+                  padding: const EdgeInsets.all(0),
                   children: [
-                    ListView(
-                      padding: const EdgeInsets.all(0),
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              opacity: 0.3,
-                              image: CachedNetworkImageProvider(
-                                'https://image.tmdb.org/t/p/w500/${widget.data.backdropPath}',
-                              )
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          opacity: 0.3,
+                          image: CachedNetworkImageProvider(
+                            'https://image.tmdb.org/t/p/w500/${widget.data.backdropPath}',
+                          )
+                        )
+                      ),
+                      child: ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 80),
+                                Builder(
+                                  builder: (context) {
+                                    if(_url != null) {
+                                      return Stack(
+                                        children: [
+                                          AspectRatio(
+                                            aspectRatio: 16/10,
+                                            child: InAppWebView(
+                                              initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
+                                              onWebViewCreated: (controller) {
+                                                _webViewController = controller;
+                                              },
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: _closePlayer,
+                                            child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Container(
+                                                margin: const EdgeInsets.only(top: 15, right: 15),
+                                                width: 20,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.white.withOpacity(0.2),
+                                                ),
+                                                child: const Center(
+                                                  child: Icon(Remix.close_line, size: 12),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    } else {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                                        child: MovieSummary(data: widget.data, play: _play),
+                                      );
+                                    }
+                                  }
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                                  child: MovieInfo(data: widget.data, detail: dp.movie!),
+                                ),
+                              ],
                             )
-                          ),
-                          child: ClipRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(15),
-                                child: MovieInfo(data: widget.data, detail: dp.movie!)
-                              )
-                            ),
-                          ),
+                          )
                         ),
-                        DefaultTabController(
-                          length: 2,
-                          child: Column(
-                            children: [
-                              TabBar(
-                                indicator: UnderlineTabIndicator(
-                                  borderSide: BorderSide(color: primaryColor),
-                                  insets: const EdgeInsets.only(bottom: 45),
-                                ),
-                                tabs: const [
-                                  Tab(text: 'Trailers & More'),
-                                  Tab(text: 'Collections')
-                                ],
-                              ),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: TabBarView(
-                                  children: [
-                                    TrailerSection(data: dp.movie!),
-                                    MediaSection(data: dp.movie!),
-                                  ],
-                                ),
-                              )
+                      ),
+                    ),
+                    DefaultTabController(
+                      length: 2,
+                      child: Column(
+                        children: [
+                          TabBar(
+                            indicator: UnderlineTabIndicator(
+                              borderSide: BorderSide(color: primaryColor),
+                              insets: const EdgeInsets.only(bottom: 45),
+                            ),
+                            tabs: const [
+                              Tab(text: 'Trailers & More'),
+                              Tab(text: 'Collections')
                             ],
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            width: double.infinity,
+                            height: 300,
+                            child: TabBarView(
+                              children: [
+                                TrailerSection(data: dp.movie!, play: _play),
+                                MediaSection(data: dp.movie!),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                    MovieDetailHeader(data: widget.data)
                   ],
-                );
-              }
-            }
-          );
+                ),
+                MovieDetailHeader(data: widget.data)
+              ],
+            );
+          }
         }
       ),
     );

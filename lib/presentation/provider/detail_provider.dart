@@ -8,12 +8,12 @@ class DetailProvider extends ChangeNotifier {
   bool isLoading = true;
   final getIt = GetIt.instance;
 
-  Future<void> getMovieDetail(int id) async {
+  Future<void> getMovieDetail(int id, String type) async {
     try {
       isLoading = true;
       notifyListeners();
       
-      final response = await getIt<Api>().getMovieDetail(id);
+      final response = await getIt<Api>().getMovieDetail(id, type);
       movie = response;
       isLoading = false;
       notifyListeners();

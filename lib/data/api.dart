@@ -26,10 +26,10 @@ class Api {
     }
   }
 
-  Future<MovieDetailModel> getMovieDetail(int id) async {
+  Future<MovieDetailModel> getMovieDetail(int id, String type) async {
    try {
       final response = await client.get(
-        Uri.parse("$baseURL/detail?tmdb=$id&type=movie")
+        Uri.parse("$baseURL/detail?tmdb=$id&type=$type")
       );
       
       if(response.statusCode == 200) {
