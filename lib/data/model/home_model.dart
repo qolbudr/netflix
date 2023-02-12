@@ -54,6 +54,7 @@ class Movie {
   String? backdropPath;
   int? id;
   String? name;
+  String? title;
   String? originalLanguage;
   String? originalName;
   String? overview;
@@ -67,6 +68,7 @@ class Movie {
   List<String>? genre;
   String? quality;
   String? imdb;
+  String? runtime;
   int? season;
 
   Movie(
@@ -74,6 +76,8 @@ class Movie {
       this.backdropPath,
       this.id,
       this.name,
+      this.title,
+      this.runtime,
       this.originalLanguage,
       this.originalName,
       this.overview,
@@ -107,6 +111,8 @@ class Movie {
     voteCount = json['vote_count'];
     genre = json['genre'].cast<String>();
     imdb = json['imdb'];
+    title = json['title'];
+    runtime = json['runtime'];
     season = json['season'];
   }
 
@@ -116,6 +122,7 @@ class Movie {
     data['backdrop_path'] = backdropPath;
     data['id'] = id;
     data['name'] = name;
+    data['title'] = title;
     data['original_language'] = originalLanguage;
     data['original_name'] = originalName;
     data['overview'] = overview;
@@ -130,6 +137,7 @@ class Movie {
     data['genre'] = genre;
     data['imdb'] = imdb;
     data['season'] = season;
+    data['runtime'] = runtime;
     return data;
   }
 }
