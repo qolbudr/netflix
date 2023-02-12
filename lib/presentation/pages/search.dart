@@ -6,6 +6,7 @@ import 'package:netflix/presentation/widget/card_movie.dart';
 import 'package:netflix/presentation/widget/section_newest.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+import 'dart:async';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -19,6 +20,7 @@ class _SearchState extends State<Search> {
   final _text = TextEditingController();
   bool _isSearch = false;
   final Map<String, dynamic> _searchBody = {'page': 1, 'title': ''};
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -40,6 +42,12 @@ class _SearchState extends State<Search> {
     );
 		}
 	}
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +73,11 @@ class _SearchState extends State<Search> {
                                   autofocus: true,
                                   onChanged: (value) {
                                     setState(() {
-                                      _searchBody['title'] = value;
-                                      Provider.of<SearchProvider>(context, listen: false).getSearch(_searchBody);
+                                      if (_debounce?.isActive ?? false) _debounce?.cancel();
+                                      _debounce = Timer(const Duration(milliseconds: 500), () {
+                                        _searchBody['title'] = value;
+                                        Provider.of<SearchProvider>(context, listen: false).getSearch(_searchBody);
+                                      });
                                     });
                                   },
                                   decoration: InputDecoration(
