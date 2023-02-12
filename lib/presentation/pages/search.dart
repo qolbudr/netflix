@@ -46,7 +46,7 @@ class _SearchState extends State<Search> {
 	}
 
   void _fetchSearch() {
-		if(_scroll.position.atEdge && _scroll.offset != 0) {
+		if(_search.position.atEdge && _search.offset != 0) {
       setState(() {
         _searchBody['page']++;
       });
@@ -92,6 +92,7 @@ class _SearchState extends State<Search> {
                                       if (_debounce?.isActive ?? false) _debounce?.cancel();
                                       _debounce = Timer(const Duration(milliseconds: 500), () {
                                         _searchBody['title'] = value;
+                                        _searchBody['page'] = 1;
                                         Provider.of<SearchProvider>(context, listen: false).getSearch(_searchBody);
                                       });
                                     });
@@ -191,10 +192,10 @@ class _SearchState extends State<Search> {
                         ),
                       );
                     } else {
-                      return Stack(
-                        children: [
-                          Expanded(
-                            child: GridView.count(
+                      return Expanded(
+                        child: Stack(
+                          children: [
+                            GridView.count(
                               controller: _search,
                               padding: const EdgeInsets.all(15),
                               crossAxisCount: 3,
@@ -208,10 +209,10 @@ class _SearchState extends State<Search> {
                                 }
                               ),
                             ),
-                          ),
-                          if(sp.isLoading && _searchBody['page'] != 1)
-                            LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
-                        ],
+                            if(sp.isLoading && _searchBody['page'] != 1)
+                              LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
+                          ],
+                        ),
                       );
                     }
                   }
