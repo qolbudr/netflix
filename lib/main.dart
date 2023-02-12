@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:netflix/constant.dart';
+import 'package:netflix/data/model/home_model.dart';
+import 'package:netflix/presentation/pages/detail.dart';
 import 'package:netflix/presentation/pages/root.dart';
 import 'package:netflix/injection.dart' as di;
+import 'package:netflix/presentation/provider/detail_provider.dart';
 import 'package:netflix/presentation/provider/home_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => di.locator<HomeProvider>()),
+        ChangeNotifierProvider(create: (_) => di.locator<DetailProvider>()),
       ],
       child: MaterialApp(
         title: 'Netflix',
@@ -30,6 +34,9 @@ class MyApp extends StatelessWidget {
           switch (settings.name) {
             case '/root':
               return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
+            case '/detail':
+              final Movie data = settings.arguments as Movie;
+              return CupertinoPageRoute(builder: (_) => Detail(data: data), settings: const RouteSettings(name: '/detail'));
             
             default: 
               return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
