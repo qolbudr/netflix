@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:auto_orientation/auto_orientation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
@@ -93,6 +94,9 @@ class _DetailState extends State<Detail> {
                                               onWebViewCreated: (controller) {
                                                 _webViewController = controller;
                                               },
+                                              onEnterFullscreen: (controller) {
+                                                 AutoOrientation.landscapeAutoMode(); 
+                                              },
                                             ),
                                           ),
                                           GestureDetector(
@@ -134,17 +138,19 @@ class _DetailState extends State<Detail> {
                       ),
                     ),
                     DefaultTabController(
-                      length: 2,
+                      length: widget.data.mediaType == 'tv' ? 3 : 2,
                       child: Column(
                         children: [
                           TabBar(
                             indicator: UnderlineTabIndicator(
-                              borderSide: BorderSide(color: primaryColor),
+                              borderSide: BorderSide(color: primaryColor, width: 2),
                               insets: const EdgeInsets.only(bottom: 45),
                             ),
-                            tabs: const [
-                              Tab(text: 'Trailers & More'),
-                              Tab(text: 'Collections')
+                            tabs: [
+                              if(widget.data.mediaType == 'tv')
+                                const Tab(text: 'Episodes'),
+                              const Tab(text: 'Trailers & More'),
+                              const Tab(text: 'Collections')
                             ],
                           ),
                           SizedBox(
@@ -152,6 +158,7 @@ class _DetailState extends State<Detail> {
                             height: 300,
                             child: TabBarView(
                               children: [
+                                TrailerSection(data: dp.movie!, play: _play),
                                 TrailerSection(data: dp.movie!, play: _play),
                                 MediaSection(data: dp.movie!),
                               ],

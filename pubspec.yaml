@@ -45,6 +45,7 @@ dependencies:
   http: ^0.13.5
   get_it: ^7.2.0
   cached_network_image: ^3.2.3
+  auto_orientation: ^2.2.1
 
 dev_dependencies:
   flutter_test:
