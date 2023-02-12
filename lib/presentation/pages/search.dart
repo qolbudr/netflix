@@ -17,6 +17,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final _scroll = ScrollController();
+  final _search = ScrollController();
   final _text = TextEditingController();
   bool _isSearch = false;
   final Map<String, dynamic> _searchBody = {'page': 1, 'title': ''};
@@ -31,6 +32,7 @@ class _SearchState extends State<Search> {
       }
     );
     _scroll.addListener(_fetchNewest);
+    _search.addListener(_fetchSearch);
   }
 
   void _fetchNewest() {
@@ -40,6 +42,20 @@ class _SearchState extends State<Search> {
         Provider.of<SearchProvider>(context, listen: false).getNewest(true);
       }
     );
+		}
+	}
+
+  void _fetchSearch() {
+		if(_scroll.position.atEdge && _scroll.offset != 0) {
+      setState(() {
+        _searchBody['page']++;
+      });
+
+      Future.microtask(
+        () {
+          Provider.of<SearchProvider>(context, listen: false).getSearch(_searchBody);
+        }
+      );
 		}
 	}
 
@@ -175,20 +191,27 @@ class _SearchState extends State<Search> {
                         ),
                       );
                     } else {
-                      return Expanded(
-                        child: GridView.count(
-                          padding: const EdgeInsets.all(15),
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 5,
-                          crossAxisSpacing: 0,
-                          childAspectRatio: 9/13,
-                          children: List.generate(
-                            sp.search!.length, (index) {
-                              Movie movie = sp.search![index];
-                              return CardMovie(movie: movie, noMargin: true);
-                            }
+                      return Stack(
+                        children: [
+                          Expanded(
+                            child: GridView.count(
+                              controller: _search,
+                              padding: const EdgeInsets.all(15),
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 5,
+                              crossAxisSpacing: 0,
+                              childAspectRatio: 9/13,
+                              children: List.generate(
+                                sp.search!.length, (index) {
+                                  Movie movie = sp.search![index];
+                                  return CardMovie(movie: movie, noMargin: true);
+                                }
+                              ),
+                            ),
                           ),
-                        ),
+                          if(sp.isLoading && _searchBody['page'] != 1)
+                            LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
+                        ],
                       );
                     }
                   }
