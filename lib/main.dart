@@ -71,9 +71,9 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: bgColor,
       body: Center(
-        child: Lottie.network(
+        child: Lottie.asset(
           animate: true,
-          'https://assets5.lottiefiles.com/private_files/lf30_F6EtR7.json',
+          'assets/lottie.json',
           width: 200,
         ),
       ),

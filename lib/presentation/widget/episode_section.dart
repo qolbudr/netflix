@@ -6,7 +6,7 @@ import 'package:netflix/data/model/home_model.dart';
 class EpisodeSection extends StatelessWidget {
   const EpisodeSection({super.key, required this.data, required this.episodes, required this.play});
   final List<Episodes> episodes;
-  final Function(String) play;
+  final Function(String, {String? subtitle}) play;
   final Movie data;
 
   @override

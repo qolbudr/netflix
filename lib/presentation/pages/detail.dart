@@ -25,6 +25,7 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
   String? _url;
+  String _subtitleURL = '';
   InAppWebViewController? _webViewController;
 
   @override
@@ -44,15 +45,106 @@ class _DetailState extends State<Detail> {
     });
   }
 
-  void _play(String url) {
+  void _play(String url, {String? subtitle}) {
     setState(() {
-      if(_url == null) {
-        _url = url;
-      } else {
-        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
-      }
-      
+      _url = url;
     });
+
+    if(subtitle != null) {
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('$url&subtitle=$subtitle')));
+    } else {
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
+    }
+  }
+
+  Future<void> _showSubtitle() {
+    return showModalBottomSheet<String>(
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return IntrinsicHeight(
+          child: SizedBox(
+            height: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: Center(
+                    child: Container(
+                      width: 72,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Text("Custom Subtitle", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Subtitle URL"),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 38,
+                        child: TextFormField(
+                          autofocus: true,
+                          onChanged: (value) {
+                            setState(() {
+                              _subtitleURL = value;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                            border: const OutlineInputBorder(borderSide: BorderSide.none),
+                            enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                            disabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                            filled: true,
+                            hintText: "https://subscene.com/subtitles/wednesday-first-season/indonesian/2967105",
+                            fillColor: Colors.white.withOpacity(0.1),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _play(_url!, subtitle: _subtitleURL);
+                        },
+                        style: defaultButton,
+                        child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Remix.play_fill),
+                          SizedBox(width: 10),
+                          Text("Play")
+                        ],
+                      ),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(padding: MediaQuery.of(context).viewInsets),
+              ],
+            ),
+          ),
+        );
+      }
+    );
   }
 
   @override
@@ -174,7 +266,11 @@ class _DetailState extends State<Detail> {
                     ),
                   ],
                 ),
-                MovieDetailHeader(data: widget.data)
+                MovieDetailHeader(
+                  data: widget.data, 
+                  displaySub: (_url?.contains('gdriveplayer') ?? false),
+                  onTap: _showSubtitle
+                ),
               ],
             );
           }

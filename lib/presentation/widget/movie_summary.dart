@@ -7,7 +7,7 @@ import 'package:remixicon/remixicon.dart';
 class MovieSummary extends StatelessWidget {
   const MovieSummary({super.key, required this.data, required this.play});
   final Movie data;
-  final Function(String) play;
+  final Function(String, {String? subtitle}) play;
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -48,6 +48,7 @@ dependencies:
   auto_orientation: ^2.2.1
   flutter_launcher_icons: ^0.11.0
   change_app_package_name: ^1.1.0
+  flutter_lints: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
