@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
 
@@ -50,9 +51,16 @@ class SectionShop extends StatelessWidget {
                           margin: const EdgeInsets.only(right: 10),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
-                            child: Image.network(
-                              'https://image.tmdb.org/t/p/w200/6ko4jfA5BrcRADDaAfMagZ4ZGpG.jpg',
+                            child: CachedNetworkImage(
+                              imageUrl: 'https://image.tmdb.org/t/p/w200/6ko4jfA5BrcRADDaAfMagZ4ZGpG.jpg',
                               width: 120,
+                              placeholder: (_, url) => AspectRatio(
+                                aspectRatio: 0.71,
+                                child: Container(
+                                  width: 120,
+                                  color: bgColor,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -60,9 +68,16 @@ class SectionShop extends StatelessWidget {
                           margin: const EdgeInsets.only(right: 10),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
-                            child: Image.network(
-                              'https://image.tmdb.org/t/p/w200/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg',
+                            child: CachedNetworkImage(
+                              imageUrl: 'https://image.tmdb.org/t/p/w200/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg',
                               width: 120,
+                              placeholder: (_, url) => AspectRatio(
+                                aspectRatio: 0.71428,
+                                child: Container(
+                                  width: 120,
+                                  color: bgColor,
+                                ),
+                              ),
                             ),
                           ),
                         ),
