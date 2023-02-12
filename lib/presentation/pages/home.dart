@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
 import 'package:netflix/data/model/home_model.dart';
@@ -62,8 +63,15 @@ class _HomeState extends State<Home> {
                     children: [
                       Stack(
                         children: [
-                          Image.network(
-                            'https://image.tmdb.org/t/p/w500/${data.banner!.posterPath}',
+                          CachedNetworkImage(
+                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner!.posterPath}',
+                            placeholder: (_, url) => AspectRatio(
+                              aspectRatio: 0.67,
+                              child: Container(
+                                width: double.infinity,
+                                color: bgColor,
+                              ),
+                            ),
                             width: double.infinity,
                           ),
                           Positioned(
@@ -124,7 +132,7 @@ class _HomeState extends State<Home> {
                                             ),
                                             const SizedBox(width: 25),
                                             ElevatedButton(
-                                              onPressed: () {}, 
+                                              onPressed: () => Navigator.pushNamed(context, '/detail', arguments: data.banner), 
                                               style: primaryButton,
                                               child: Row(
                                                 children: const [
