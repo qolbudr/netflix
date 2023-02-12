@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:netflix/data/api.dart';
 import 'package:netflix/presentation/provider/detail_provider.dart';
 import 'package:netflix/presentation/provider/home_provider.dart';
+import 'package:netflix/presentation/provider/search_provider.dart';
 final locator = GetIt.instance;
 
 void init()
@@ -12,4 +13,5 @@ void init()
 	
 	locator.registerFactory(() => HomeProvider());
   locator.registerFactory(() => DetailProvider());
+  locator.registerFactory(() => SearchProvider());
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:netflix/presentation/pages/home.dart';
+import 'package:netflix/presentation/pages/search.dart';
 import 'package:remixicon/remixicon.dart';
 
 class Root extends StatefulWidget {
@@ -14,7 +15,7 @@ class _RootState extends State<Root> {
 
   final List<Widget> _body = [
     const Home(),
-    const SizedBox(),
+    const Search(),
     const SizedBox(),
   ];
 

@@ -8,6 +8,7 @@ import 'package:netflix/presentation/pages/root.dart';
 import 'package:netflix/injection.dart' as di;
 import 'package:netflix/presentation/provider/detail_provider.dart';
 import 'package:netflix/presentation/provider/home_provider.dart';
+import 'package:netflix/presentation/provider/search_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => di.locator<HomeProvider>()),
         ChangeNotifierProvider(create: (_) => di.locator<DetailProvider>()),
+        ChangeNotifierProvider(create: (_) => di.locator<SearchProvider>()),
       ],
       child: MaterialApp(
         title: 'Netflix',
