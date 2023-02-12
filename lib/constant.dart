@@ -9,6 +9,10 @@ ButtonStyle primaryButton = ButtonStyle(
   padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 5, horizontal: 20))
 );
 
+ButtonStyle defaultButton = ButtonStyle(
+  foregroundColor: MaterialStateProperty.all(Colors.white)
+);
+
 ThemeData themeData = ThemeData(
   fontFamily: "Netflix",
   primaryColor: primaryColor,
