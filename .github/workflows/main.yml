@@ -1,0 +1,53 @@
+name: CI
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+
+  workflow_dispatch:
+  
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use github actions
+        uses: actions/checkout@v3
+      
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.5.0
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.3.7'
+          channel: 'stable'
+      
+      # - name: Delete Old Artifacts
+      #   uses: actions/github-script@v6
+      #   id: artifact
+      #   with:
+      #     script: |
+      #       const res = await github.rest.actions.listArtifactsForRepo({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #       })
+
+      #       res.data.artifacts.forEach(({ id }) => {
+      #           github.rest.actions.deleteArtifact({
+      #             owner: context.repo.owner,
+      #             repo: context.repo.repo,
+      #             artifact_id: id,
+      #           })
+      #         })
+          
+      - run: flutter pub get #installing the plugins for the flutter project
+      - run: flutter build apk #building flutter apk
+      - run: flutter build appbundle #building flutter bundle
+      - uses: actions/upload-artifact@v3
+        with:
+          name: APK Upload
+          path: build/app/outputs/apk/release/app-release.apk
