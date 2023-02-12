@@ -9,6 +9,8 @@ class SearchProvider extends ChangeNotifier {
   bool isLoading = true;
   final getIt = GetIt.instance;
 
+  List<Movie>? search;
+
   Future<void> getNewest(bool isNext) async {
     try {
       if(!isNext && newestPage != 1) {
@@ -26,6 +28,24 @@ class SearchProvider extends ChangeNotifier {
       }
       
       newestPage++;
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getSearch(Map<String, dynamic> data) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+      
+      final response = await getIt<Api>().getSearch(data['title'], data['page']);
+      if(data['page'] == 1) {
+        search = response;
+      } else {
+        search!.addAll(response);
+      }
       isLoading = false;
       notifyListeners();
     } catch (e) {

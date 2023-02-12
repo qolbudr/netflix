@@ -104,7 +104,7 @@ class Movie {
     posterPath = json['poster_path'];
     mediaType = json['media_type'];
     genreIds = json['genre_ids'].cast<int>();
-    popularity = json['popularity'];
+    popularity = double.parse(json['popularity'].toString());
     quality = json['quality'];
     firstAirDate = json['first_air_date'];
     voteAverage = double.parse(json['vote_average'].toString());
