@@ -36,7 +36,7 @@ class MovieDetailHeader extends StatelessWidget {
               child: GestureDetector(
                 onTap: onTap,
                 child: Container(
-                  margin: const EdgeInsets.only(left: 15),
+                  margin: const EdgeInsets.only(right: 15),
                   child: const Icon(Remix.global_line)
                 )
               )
