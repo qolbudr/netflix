@@ -28,7 +28,7 @@ class DetailProvider extends ChangeNotifier {
 
   Future<void> getEpisode(int id, int season) async {
     try {
-      episode = null;
+      episode = [];
       episodeLoading = true;
       notifyListeners();
       
