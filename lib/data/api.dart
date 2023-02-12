@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:netflix/data/model/episode_model.dart';
 import 'package:netflix/data/model/home_model.dart';
 import 'package:netflix/data/model/movie_detail_model.dart';
 
@@ -36,6 +37,24 @@ class Api {
         Map<String, dynamic> data = jsonDecode(response.body);
         MovieDetailModel model = MovieDetailModel.fromJson(data);
         return model;
+      } else {
+        throw Exception('Maaf server sedang sibuk');
+      }
+    } catch (e) {
+      rethrow;
+    } 
+  }
+
+  Future<List<Episodes>> getEpisode(int id, int season) async {
+   try {
+      final response = await client.get(
+        Uri.parse("$baseURL/episode?tmdb=$id&season=$season")
+      );
+      
+      if(response.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(response.body);
+        EpisodeModel model = EpisodeModel.fromJson(data);
+        return model.episodes!;
       } else {
         throw Exception('Maaf server sedang sibuk');
       }

@@ -52,7 +52,10 @@ class MovieSummary extends StatelessWidget {
         const SizedBox(height: 30),
         ElevatedButton(
           style: defaultButton,
-          onPressed: () => play('https://database.gdriveplayer.us/player.php?imdb=${data.imdb}'), 
+          onPressed: () => 
+            (data.season != null) ?
+              play('https://database.gdriveplayer.us/player.php?type=series&imdb=${data.imdb}&season=${data.season}&episode=1') :
+              play('https://database.gdriveplayer.us/player.php?imdb=${data.imdb}'), 
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [

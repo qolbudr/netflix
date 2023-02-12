@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
 import 'package:netflix/data/model/home_model.dart';
 import 'package:netflix/presentation/provider/detail_provider.dart';
+import 'package:netflix/presentation/widget/episode_section.dart';
 import 'package:netflix/presentation/widget/media_section.dart';
 import 'package:netflix/presentation/widget/movie_detail_header.dart';
 import 'package:netflix/presentation/widget/movie_info.dart';
@@ -31,6 +32,9 @@ class _DetailState extends State<Detail> {
     super.initState();
     Future.microtask(() {
       Provider.of<DetailProvider>(context, listen: false).getMovieDetail(widget.data.id!, widget.data.mediaType!);
+      if(widget.data.mediaType! == 'tv') {
+        Provider.of<DetailProvider>(context, listen: false).getEpisode(widget.data.id!, widget.data.season!);
+      }
     });
   }
 
@@ -56,7 +60,7 @@ class _DetailState extends State<Detail> {
     return Scaffold(
       body: Consumer<DetailProvider>(
         builder: (_, dp, __) {
-          if(dp.isLoading == true) {
+          if((dp.isLoading == true && widget.data.mediaType! == 'movie') || (widget.data.mediaType! == 'tv' && dp.isLoading == true && dp.episodeLoading == true)) {
             return const Center(child: CircularProgressIndicator());
           } else {
             return Stack(
@@ -158,7 +162,8 @@ class _DetailState extends State<Detail> {
                             height: 300,
                             child: TabBarView(
                               children: [
-                                TrailerSection(data: dp.movie!, play: _play),
+                                if(widget.data.mediaType == 'tv')
+                                  EpisodeSection(data: widget.data, episodes: dp.episode!, play: _play),
                                 TrailerSection(data: dp.movie!, play: _play),
                                 MediaSection(data: dp.movie!),
                               ],
