@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:netflix/constant.dart';
 import 'package:netflix/presentation/pages/home.dart';
+import 'package:netflix/presentation/pages/profile.dart';
 import 'package:netflix/presentation/pages/search.dart';
 import 'package:netflix/presentation/provider/home_provider.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +52,7 @@ class _RootState extends State<Root> {
     final List<Widget> body = [
       Home(openGenre: _openGenre),
       const Search(),
-      const SizedBox(),
+      const Profile()
     ];
 
     return Stack(
