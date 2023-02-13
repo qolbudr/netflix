@@ -186,6 +186,10 @@ class _DetailState extends State<Detail> {
                                           AspectRatio(
                                             aspectRatio: 16/10,
                                             child: InAppWebView(
+                                              initialOptions: InAppWebViewGroupOptions(
+                                                crossPlatform: InAppWebViewOptions(
+                                                supportZoom: false,
+                                              )),
                                               initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
                                               onWebViewCreated: (controller) {
                                                 _webViewController = controller;
