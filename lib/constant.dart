@@ -32,3 +32,33 @@ ThemeData themeData = ThemeData(
     background: Colors.white,
   )
 );
+
+List<String> genre = [
+	"Action",
+	"Adventure",
+	"Animation",
+	"Comedy",
+	"Crime",
+	"Documentary",
+	"Drama",
+	"Family",
+	"Fantasy",
+	"History",
+	"Horror",
+	"Music",
+	"Mystery",
+	"Romance",
+	"Science Fiction",
+	"TV Movie",
+	"Thriller",
+	"War",
+	"Western",
+	"Action & Adventure",
+  "Kids",
+  "News",
+  "Reality",
+  "Sci-Fi & Fantasy",
+  "Soap",
+  "Talk",
+  "War & Politics"
+];

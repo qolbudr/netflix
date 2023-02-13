@@ -106,4 +106,26 @@ class Api {
       rethrow;
     } 
   }
+
+  Future<List<Movie>> getCategory(String category, int page) async {
+   try {
+      final response = await client.get(
+        Uri.parse("$baseURL/genre?genre=$category&page=$page")
+      );
+      
+      if(response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        List<Movie> result = <Movie>[];
+        for (Map<String, dynamic> v in data) {
+          result.add(Movie.fromJson(v));
+        }
+
+        return result;
+      } else {
+        throw Exception('Maaf server sedang sibuk');
+      }
+    } catch (e) {
+      rethrow;
+    } 
+  }
 }
