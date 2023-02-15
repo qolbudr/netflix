@@ -222,7 +222,7 @@ class _DetailState extends State<Detail> {
                                                 supportZoom: false,
                                                 contentBlockers: contentBlockers
                                               )),
-                                              initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
+                                              initialUrlRequest: URLRequest(url: Uri.parse('https://netflix-be-six.vercel.app/api/player?url=$url')),
                                               onWebViewCreated: (controller) {
                                                 _webViewController = controller;
                                               },
