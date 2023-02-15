@@ -27,6 +27,25 @@ class _DetailState extends State<Detail> {
   String? _url;
   String _subtitleURL = '';
   InAppWebViewController? _webViewController;
+  
+  final adUrlFilters = [
+    ".*.doubleclick.net/.*",
+    ".*.ads.pubmatic.com/.*",
+    ".*.googlesyndication.com/.*",
+    ".*.google-analytics.com/.*",
+    ".*.adservice.google.*/.*",
+    ".*.adbrite.com/.*",
+    ".*.exponential.com/.*",
+    ".*.quantserve.com/.*",
+    ".*.scorecardresearch.com/.*",
+    ".*.phvhidwoetcbtno.com/.*",
+    ".*.adsafeprotected.com/.*",
+    ".*.glersaker.com/.*",
+    ".*.dtscout.com/.*"
+  ];
+
+  final List<ContentBlocker> contentBlockers = [];
+
 
   @override
   void initState() {
@@ -37,6 +56,18 @@ class _DetailState extends State<Detail> {
         Provider.of<DetailProvider>(context, listen: false).getEpisode(widget.data.id!, widget.data.season!);
       }
     });
+
+    for (final adUrlFilter in adUrlFilters) {
+      contentBlockers.add(ContentBlocker(
+          trigger: ContentBlockerTrigger(
+            urlFilter: adUrlFilter,
+          ),
+          action: ContentBlockerAction(
+            type: ContentBlockerActionType.BLOCK,
+          ),
+        ),
+      );
+    }
   }
 
   void _closePlayer() {
@@ -51,9 +82,9 @@ class _DetailState extends State<Detail> {
     });
 
     if(subtitle != null) {
-      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('$url&subtitle=$subtitle')));
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('https://netflix-be-six.vercel.app/api/player?url=$url&subtitle=$subtitle')));
     } else {
-      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('https://netflix-be-six.vercel.app/api/player?url=$url')));
     }
   }
 
@@ -189,6 +220,7 @@ class _DetailState extends State<Detail> {
                                               initialOptions: InAppWebViewGroupOptions(
                                                 crossPlatform: InAppWebViewOptions(
                                                 supportZoom: false,
+                                                contentBlockers: contentBlockers
                                               )),
                                               initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
                                               onWebViewCreated: (controller) {
