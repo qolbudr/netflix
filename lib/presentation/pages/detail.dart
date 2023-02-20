@@ -307,16 +307,6 @@ class _DetailState extends State<Detail> {
     }
   }
 
-  String getHtml(String url)
-  {
-    return '''
-        <html>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <iframe src="$url" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        </html>
-      ''';
-  }
-
   void _closePlayer() {
     setState(() {
       _url = null;
@@ -326,15 +316,13 @@ class _DetailState extends State<Detail> {
   void _play(String url, {String? subtitle}) {
     setState(() {
       _url = url;
-
-      if(subtitle != null) {
-        iframe = getHtml('$_url!&subtitle=$subtitle');
-        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.dataFromString(iframe!)));
-      } else {
-        iframe = getHtml(_url!);
-        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.dataFromString(iframe!)));
-      }
     });
+
+    if(subtitle != null) {
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('$url&subtitle=$subtitle')));
+    } else {
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
+    }
   }
 
   Future<void> _showSubtitle() {
@@ -471,7 +459,7 @@ class _DetailState extends State<Detail> {
                                                 supportZoom: false,
                                                 contentBlockers: contentBlockers
                                               )),
-                                              initialUrlRequest: URLRequest(url: Uri.dataFromString(getHtml(_url!))),
+                                              initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
                                               onWebViewCreated: (controller) {
                                                 _webViewController = controller;
                                               },
