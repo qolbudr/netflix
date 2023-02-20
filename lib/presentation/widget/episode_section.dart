@@ -18,7 +18,7 @@ class EpisodeSection extends StatelessWidget {
       itemBuilder: (context, index) {
         Episodes episode = episodes[index];
         return GestureDetector(
-          onTap: () => play('https://database.gdriveplayer.us/player.php?type=series&imdb=${data.imdb}&season=${data.season}&episode=${index + 1}'),
+          onTap: () => play('https://netflix-be-six.vercel.app/api/player?imdb=${data.imdb}&season=${data.season}&episode=${index + 1}'),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

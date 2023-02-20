@@ -78,7 +78,6 @@ class _DetailState extends State<Detail> {
     ".*.daddylive.click/.*",
     ".*.daddylive.fun/.*",
     ".*.dailyuploads.net/.*",
-    ".*.databasegdriveplayer.xyz/.*",
     ".*.deltabit.co/.*",
     ".*.dood.la/.*",
     ".*.dood.pm/.*",
@@ -115,7 +114,6 @@ class _DetailState extends State<Detail> {
     ".*.gameshdlive.xyz/.*",
     ".*.gamovideo.com/.*",
     ".*.gaybeeg.info/.*",
-    ".*.gdriveplayer.pro/.*",
     ".*.givemenbastreams.com/.*",
     ".*.gogoanimes.org/.*",
     ".*.gogohd.net/.*",
@@ -144,7 +142,6 @@ class _DetailState extends State<Detail> {
     ".*.mangareader.to/.*",
     ".*.mangovideo.pw/.*",
     ".*.maxsport.one/.*",
-    ".*.membed.net/.*",
     ".*.meomeo.pw/.*",
     ".*.mirrorace.org/.*",
     ".*.mixdrop.bz/.*",
@@ -318,11 +315,11 @@ class _DetailState extends State<Detail> {
       _url = url;
     });
 
-    if(subtitle != null) {
-      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('$url&subtitle=$subtitle')));
-    } else {
-      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
-    }
+      if(subtitle != null) {
+        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('$url!&subtitle=$subtitle')));
+      } else {
+        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
+      }
   }
 
   Future<void> _showSubtitle() {
@@ -457,6 +454,7 @@ class _DetailState extends State<Detail> {
                                               initialOptions: InAppWebViewGroupOptions(
                                                 crossPlatform: InAppWebViewOptions(
                                                 supportZoom: false,
+                                                javaScriptEnabled: true,
                                                 contentBlockers: contentBlockers
                                               )),
                                               initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
