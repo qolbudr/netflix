@@ -40,6 +40,7 @@ class Player extends StatelessWidget {
               BetterPlayerSubtitlesSource(
                 type: BetterPlayerSubtitlesSourceType.memory,
                 content: argument.subtitle,
+                selectedByDefault: true,
               ),
             ],
           ),
