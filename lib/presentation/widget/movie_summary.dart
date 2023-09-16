@@ -7,7 +7,7 @@ import 'package:remixicon/remixicon.dart';
 class MovieSummary extends StatelessWidget {
   const MovieSummary({super.key, required this.data, required this.play});
   final Movie data;
-  final Function(String, {String? subtitle}) play;
+  final Function({int? episode}) play;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -52,17 +52,10 @@ class MovieSummary extends StatelessWidget {
         const SizedBox(height: 30),
         ElevatedButton(
           style: defaultButton,
-          onPressed: () => 
-            (data.season != null) ?
-              play('https://database.gdriveplayer.us/player.php?type=series&imdb=${data.imdb}&season=${data.season}&episode=1') :
-              play('https://database.gdriveplayer.us/player.php?imdb=${data.imdb}'), 
-          child: Row(
+          onPressed: play,
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Remix.play_fill),
-              SizedBox(width: 10),
-              Text("Play")
-            ],
+            children: [Icon(Remix.play_fill), SizedBox(width: 10), Text("Play")],
           ),
         ),
       ],

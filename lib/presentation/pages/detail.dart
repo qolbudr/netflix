@@ -2,8 +2,12 @@ import 'dart:ui';
 import 'package:auto_orientation/auto_orientation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
+import 'package:get_it/get_it.dart';
 import 'package:netflix/constant.dart';
+import 'package:netflix/data/api.dart';
 import 'package:netflix/data/model/home_model.dart';
+import 'package:netflix/data/model/player_model.dart';
+import 'package:netflix/presentation/pages/player.dart';
 import 'package:netflix/presentation/provider/detail_provider.dart';
 import 'package:netflix/presentation/widget/episode_section.dart';
 import 'package:netflix/presentation/widget/media_section.dart';
@@ -28,7 +32,8 @@ class _DetailState extends State<Detail> {
   String _subtitleURL = '';
   InAppWebViewController? _webViewController;
   String? iframe;
-  
+  final getIt = GetIt.instance;
+
   final adUrlFilters = [
     ".*.doubleclick.net/.*",
     ".*.ads.pubmatic.com/.*",
@@ -43,7 +48,7 @@ class _DetailState extends State<Detail> {
     ".*.adsafeprotected.com/.*",
     ".*.glersaker.com/.*",
     ".*.dtscout.com/.*"
-    ".*.123movies.tw/.*",
+        ".*.123movies.tw/.*",
     ".*.19turanosephantasia.com/.*",
     ".*.1cloudfile.com/.*",
     ".*.20demidistance9elongations.com/.*",
@@ -280,19 +285,19 @@ class _DetailState extends State<Detail> {
 
   final List<ContentBlocker> contentBlockers = [];
 
-
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       Provider.of<DetailProvider>(context, listen: false).getMovieDetail(widget.data.id!, widget.data.mediaType!);
-      if(widget.data.mediaType! == 'tv') {
+      if (widget.data.mediaType! == 'tv') {
         Provider.of<DetailProvider>(context, listen: false).getEpisode(widget.data.id!, widget.data.season!);
       }
     });
 
     for (final adUrlFilter in adUrlFilters) {
-      contentBlockers.add(ContentBlocker(
+      contentBlockers.add(
+        ContentBlocker(
           trigger: ContentBlockerTrigger(
             urlFilter: adUrlFilter,
           ),
@@ -315,11 +320,34 @@ class _DetailState extends State<Detail> {
       _url = url;
     });
 
-      if(subtitle != null) {
-        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('$url!&subtitle=$subtitle')));
-      } else {
-        _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
-      }
+    if (subtitle != null) {
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse('$url!&subtitle=$subtitle')));
+    } else {
+      _webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
+    }
+  }
+
+  void _playMovie({int? episode}) async {
+    PlayerArgument argument;
+    PlayerModel response;
+
+    if (widget.data.season != null) {
+      response = await getIt<Api>().getPlayer(
+        widget.data.goMovieId!,
+        widget.data.imdb!,
+        season: widget.data.season,
+        episode: episode ?? 1,
+      );
+    } else {
+      response = await getIt<Api>().getPlayer(
+        widget.data.goMovieId!,
+        widget.data.imdb!,
+      );
+    }
+
+    argument = PlayerArgument(url: response.data!.file!, subtitle: response.subtitle!, movie: widget.data);
+
+    if (mounted) Navigator.pushNamed(context, '/player', arguments: argument);
   }
 
   Future<void> _showSubtitle() {
@@ -391,14 +419,14 @@ class _DetailState extends State<Detail> {
                           _play(_url!, subtitle: _subtitleURL);
                         },
                         style: defaultButton,
-                        child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Remix.play_fill),
-                          SizedBox(width: 10),
-                          Text("Play")
-                        ],
-                      ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Remix.play_fill),
+                            SizedBox(width: 10),
+                            Text("Play"),
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -408,7 +436,7 @@ class _DetailState extends State<Detail> {
             ),
           ),
         );
-      }
+      },
     );
   }
 
@@ -417,7 +445,7 @@ class _DetailState extends State<Detail> {
     return Scaffold(
       body: Consumer<DetailProvider>(
         builder: (_, dp, __) {
-          if((dp.isLoading == true && widget.data.mediaType! == 'movie') || (widget.data.mediaType! == 'tv' && dp.isLoading == true && dp.episodeLoading == true)) {
+          if ((dp.isLoading == true && widget.data.mediaType! == 'movie') || (widget.data.mediaType! == 'tv' && dp.isLoading == true && dp.episodeLoading == true)) {
             return const Center(child: CircularProgressIndicator());
           } else {
             return Stack(
@@ -432,8 +460,8 @@ class _DetailState extends State<Detail> {
                           opacity: 0.3,
                           image: CachedNetworkImageProvider(
                             'https://image.tmdb.org/t/p/w500/${widget.data.backdropPath}',
-                          )
-                        )
+                          ),
+                        ),
                       ),
                       child: ClipRect(
                         child: BackdropFilter(
@@ -443,64 +471,57 @@ class _DetailState extends State<Detail> {
                             child: Column(
                               children: [
                                 const SizedBox(height: 80),
-                                Builder(
-                                  builder: (context) {
-                                    if(_url != null) {
-                                      return Stack(
-                                        children: [
-                                          AspectRatio(
-                                            aspectRatio: 16/10,
-                                            child: InAppWebView(
-                                              initialOptions: InAppWebViewGroupOptions(
-                                                crossPlatform: InAppWebViewOptions(
-                                                supportZoom: false,
-                                                javaScriptEnabled: true,
-                                                contentBlockers: contentBlockers
-                                              )),
-                                              initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
-                                              onWebViewCreated: (controller) {
-                                                _webViewController = controller;
-                                              },
-                                              onEnterFullscreen: (controller) {
-                                                 AutoOrientation.landscapeAutoMode(); 
-                                              },
-                                            ),
+                                Builder(builder: (context) {
+                                  if (_url != null) {
+                                    return Stack(
+                                      children: [
+                                        AspectRatio(
+                                          aspectRatio: 16 / 10,
+                                          child: InAppWebView(
+                                            initialOptions: InAppWebViewGroupOptions(crossPlatform: InAppWebViewOptions(supportZoom: false, javaScriptEnabled: true, contentBlockers: contentBlockers)),
+                                            initialUrlRequest: URLRequest(url: Uri.parse(_url!)),
+                                            onWebViewCreated: (controller) {
+                                              _webViewController = controller;
+                                            },
+                                            onEnterFullscreen: (controller) {
+                                              AutoOrientation.landscapeAutoMode();
+                                            },
                                           ),
-                                          GestureDetector(
-                                            onTap: _closePlayer,
-                                            child: Align(
-                                              alignment: Alignment.topRight,
-                                              child: Container(
-                                                margin: const EdgeInsets.only(top: 15, right: 15),
-                                                width: 20,
-                                                height: 20,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.white.withOpacity(0.2),
-                                                ),
-                                                child: const Center(
-                                                  child: Icon(Remix.close_line, size: 12),
-                                                ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: _closePlayer,
+                                          child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              margin: const EdgeInsets.only(top: 15, right: 15),
+                                              width: 20,
+                                              height: 20,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white.withOpacity(0.2),
+                                              ),
+                                              child: const Center(
+                                                child: Icon(Remix.close_line, size: 12),
                                               ),
                                             ),
-                                          )
-                                        ],
-                                      );
-                                    } else {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                                        child: MovieSummary(data: widget.data, play: _play),
-                                      );
-                                    }
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  } else {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                                      child: MovieSummary(data: widget.data, play: _playMovie),
+                                    );
                                   }
-                                ),
+                                }),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 15),
                                   child: MovieInfo(data: widget.data, detail: dp.movie!),
                                 ),
                               ],
-                            )
-                          )
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -513,20 +534,14 @@ class _DetailState extends State<Detail> {
                               borderSide: BorderSide(color: primaryColor, width: 2),
                               insets: const EdgeInsets.only(bottom: 45),
                             ),
-                            tabs: [
-                              if(widget.data.mediaType == 'tv')
-                                const Tab(text: 'Episodes'),
-                              const Tab(text: 'Trailers & More'),
-                              const Tab(text: 'Collections')
-                            ],
+                            tabs: [if (widget.data.mediaType == 'tv') const Tab(text: 'Episodes'), const Tab(text: 'Trailers & More'), const Tab(text: 'Collections')],
                           ),
                           SizedBox(
                             width: double.infinity,
                             height: 300,
                             child: TabBarView(
                               children: [
-                                if(widget.data.mediaType == 'tv')
-                                  EpisodeSection(data: widget.data, episodes: dp.episode!, play: _play),
+                                if (widget.data.mediaType == 'tv') EpisodeSection(data: widget.data, episodes: dp.episode!, play: _playMovie),
                                 TrailerSection(data: dp.movie!, play: _play),
                                 MediaSection(data: dp.movie!),
                               ],
@@ -538,14 +553,14 @@ class _DetailState extends State<Detail> {
                   ],
                 ),
                 MovieDetailHeader(
-                  data: widget.data, 
+                  data: widget.data,
                   displaySub: (_url?.contains('gdriveplayer') ?? false),
-                  onTap: _showSubtitle
+                  onTap: _showSubtitle,
                 ),
               ],
             );
           }
-        }
+        },
       ),
     );
   }

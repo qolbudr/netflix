@@ -6,7 +6,7 @@ import 'package:netflix/data/model/home_model.dart';
 class EpisodeSection extends StatelessWidget {
   const EpisodeSection({super.key, required this.data, required this.episodes, required this.play});
   final List<Episodes> episodes;
-  final Function(String, {String? subtitle}) play;
+  final Function({int? episode}) play;
   final Movie data;
 
   @override
@@ -18,7 +18,7 @@ class EpisodeSection extends StatelessWidget {
       itemBuilder: (context, index) {
         Episodes episode = episodes[index];
         return GestureDetector(
-          onTap: () => play('https://netflix-be-six.vercel.app/api/player?imdb=${data.imdb}&season=${data.season}&episode=${index + 1}'),
+          onTap: () => play(episode: index + 1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

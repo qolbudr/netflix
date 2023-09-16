@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:netflix/constant.dart';
 import 'package:netflix/data/model/home_model.dart';
 import 'package:netflix/presentation/pages/detail.dart';
+import 'package:netflix/presentation/pages/player.dart';
 import 'package:netflix/presentation/pages/root.dart';
 import 'package:netflix/injection.dart' as di;
 import 'package:netflix/presentation/provider/detail_provider.dart';
@@ -28,23 +29,24 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => di.locator<SearchProvider>()),
       ],
       child: MaterialApp(
-        title: 'Netflix',
-        debugShowCheckedModeBanner: false,
-        theme: themeData,
-        home: const SplashScreen(),
-        onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case '/root':
-              return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
-            case '/detail':
-              final Movie data = settings.arguments as Movie;
-              return CupertinoPageRoute(builder: (_) => Detail(data: data), settings: const RouteSettings(name: '/detail'));
-            
-            default: 
-              return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
-          }
-        }
-      ),
+          title: 'Netflix',
+          debugShowCheckedModeBanner: false,
+          theme: themeData,
+          home: const SplashScreen(),
+          onGenerateRoute: (RouteSettings settings) {
+            switch (settings.name) {
+              case '/root':
+                return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
+              case '/detail':
+                final Movie data = settings.arguments as Movie;
+                return CupertinoPageRoute(builder: (_) => Detail(data: data), settings: const RouteSettings(name: '/detail'));
+              case '/player':
+                final PlayerArgument data = settings.arguments as PlayerArgument;
+                return CupertinoPageRoute(builder: (_) => Player(argument: data), settings: const RouteSettings(name: '/detail'));
+              default:
+                return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
+            }
+          }),
     );
   }
 }
@@ -60,10 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-      const Duration(milliseconds: 3500),
-      () => Navigator.pushReplacementNamed(context, '/root')
-    );
+    Future.delayed(const Duration(milliseconds: 3500), () => Navigator.pushReplacementNamed(context, '/root'));
   }
 
   @override

@@ -9,8 +9,7 @@ class HomeModel {
   HomeModel({this.banner, this.action, this.romance, this.series});
 
   HomeModel.fromJson(Map<String, dynamic> json) {
-    banner =
-        json['banner'] != null ? new Movie.fromJson(json['banner']) : null;
+    banner = json['banner'] != null ? new Movie.fromJson(json['banner']) : null;
     if (json['action'] != null) {
       action = <Movie>[];
       json['action'].forEach((v) {
@@ -68,6 +67,7 @@ class Movie {
   List<String>? genre;
   String? quality;
   String? imdb;
+  String? goMovieId;
   String? runtime;
   int? season;
 
@@ -90,6 +90,7 @@ class Movie {
       this.voteCount,
       this.genre,
       this.imdb,
+      this.goMovieId,
       this.quality,
       this.season});
 
@@ -111,6 +112,7 @@ class Movie {
     voteCount = json['vote_count'];
     genre = json['genre'].cast<String>();
     imdb = json['imdb'];
+    goMovieId = json['goMoviesId'];
     title = json['title'];
     runtime = json['runtime'];
     season = json['season'];
@@ -136,6 +138,7 @@ class Movie {
     data['vote_count'] = voteCount;
     data['genre'] = genre;
     data['imdb'] = imdb;
+    data['goMoviesId'] = goMovieId;
     data['season'] = season;
     data['runtime'] = runtime;
     return data;

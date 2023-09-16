@@ -33,11 +33,10 @@ class _HomeState extends State<Home> {
     _scrollController.addListener(_onScroll);
     _scrollControllerGenre.addListener(_onScrollGenre);
   }
-  
 
   void _onScroll() {
     setState(() {
-      if(_scrollController.offset <= 140) {
+      if (_scrollController.offset <= 140) {
         _scrollOffset = _scrollController.offset;
       } else {
         _scrollOffset = 140;
@@ -47,80 +46,68 @@ class _HomeState extends State<Home> {
 
   void _onScrollGenre() {
     setState(() {
-      if(_scrollControllerGenre.offset <= 140) {
+      if (_scrollControllerGenre.offset <= 140) {
         _scrollOffset = _scrollControllerGenre.offset;
       } else {
         _scrollOffset = 140;
       }
     });
 
-    if(_scrollControllerGenre.position.atEdge && _scrollControllerGenre.offset != 0) {
+    if (_scrollControllerGenre.position.atEdge && _scrollControllerGenre.offset != 0) {
       setState(() {
         page++;
       });
 
-      Future.microtask(
-        () {
-          Provider.of<HomeProvider>(context, listen: false).getCategory(page);
-        }
-      );
-		}
+      Future.microtask(() {
+        Provider.of<HomeProvider>(context, listen: false).getCategory(page);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Consumer<HomeProvider>(
-        builder: (_, hp, __) {
-          if(hp.category == null) {
-            if(hp.isLoading == true) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              HomeModel data = hp.data!;
-              return Stack(
-                children: [
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: ListView(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.all(0),
-                      children: [
-                        Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner!.posterPath}',
-                              placeholder: (_, url) => AspectRatio(
-                                aspectRatio: 0.67,
-                                child: Container(
-                                  width: double.infinity,
-                                  color: bgColor,
-                                ),
+      body: Consumer<HomeProvider>(builder: (_, hp, __) {
+        if (hp.category == null) {
+          if (hp.isLoading == true) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            HomeModel data = hp.data!;
+            return Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: ListView(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(0),
+                    children: [
+                      Stack(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner!.posterPath}',
+                            placeholder: (_, url) => AspectRatio(
+                              aspectRatio: 0.67,
+                              child: Container(
+                                width: double.infinity,
+                                color: bgColor,
                               ),
-                              width: double.infinity,
                             ),
-                            Positioned(
+                            width: double.infinity,
+                          ),
+                          Positioned(
                               left: 0,
                               right: 0,
                               bottom: 0,
                               child: Container(
                                 padding: const EdgeInsets.all(20),
                                 width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black,
-                                      Colors.transparent
-                                    ]
-                                  )
-                                ),
+                                decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.bottomCenter, end: Alignment.topCenter, colors: [Colors.black, Colors.transparent])),
                                 child: SizedBox(
                                   width: double.infinity,
                                   child: Wrap(
@@ -130,55 +117,49 @@ class _HomeState extends State<Home> {
                                       Column(
                                         children: [
                                           Text(
-                                            data.banner!.name!, 
+                                            data.banner!.name!,
                                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 32),
                                             textAlign: TextAlign.center,
                                           ),
                                           const SizedBox(height: 15),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
-                                            children: List.generate(data.banner!.genre!.length, (index) => 
-                                              Row(
+                                            children: List.generate(
+                                              data.banner!.genre!.length,
+                                              (index) => Row(
                                                 children: [
                                                   Text(data.banner!.genre![index]),
-                                                  if(index != data.banner!.genre!.length - 1)
-                                                  const GenreSeparator(),
+                                                  if (index != data.banner!.genre!.length - 1) const GenreSeparator(),
                                                 ],
-                                              )
-                                            )
+                                              ),
+                                            ),
                                           ),
                                           const SizedBox(height: 10),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {}, 
-                                                    child: const Icon(Icons.add_outlined)
-                                                  ),
-                                                  const Text("My List")
-                                                ],
+                                                children: [GestureDetector(onTap: () {}, child: const Icon(Icons.add_outlined)), const Text("My List")],
                                               ),
                                               const SizedBox(width: 25),
                                               ElevatedButton(
-                                                onPressed: () => Navigator.pushNamed(context, '/detail', arguments: data.banner), 
+                                                onPressed: () => Navigator.pushNamed(context, '/detail', arguments: data.banner),
                                                 style: primaryButton,
-                                                child: Row(
-                                                  children: const [
+                                                child: const Row(
+                                                  children: [
                                                     Icon(Icons.play_arrow),
-                                                    Text("Play")
-                                                  ]
-                                                )
+                                                    Text("Play"),
+                                                  ],
+                                                ),
                                               ),
                                               const SizedBox(width: 25),
                                               Column(
                                                 children: [
                                                   GestureDetector(
-                                                    onTap: () {}, 
-                                                    child: const Icon(Icons.info_outline)
+                                                    onTap: () {},
+                                                    child: const Icon(Icons.info_outline),
                                                   ),
-                                                  const Text("Info")
+                                                  const Text("Info"),
                                                 ],
                                               )
                                             ],
@@ -188,47 +169,46 @@ class _HomeState extends State<Home> {
                                     ],
                                   ),
                                 ),
-                              )
-                            )
-                          ],
-                        ),
-                        SectionHome(data: data.action!, title: 'Action'),
-                        const SectionShop(),
-                        SectionHome(data: data.romance!, title: 'Romance'),
-                        SectionHome(data: data.series!, title: 'Series'),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black,
-                            Colors.black.withOpacity(_scrollOffset / 145)
-                          ]
-                        )
+                              ))
+                        ],
                       ),
+                      SectionHome(data: data.action!, title: 'Action'),
+                      const SectionShop(),
+                      SectionHome(data: data.romance!, title: 'Romance'),
+                      SectionHome(data: data.series!, title: 'Series'),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                      decoration:
+                          BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, Colors.black.withOpacity(_scrollOffset / 145)])),
                       width: double.infinity,
-                      padding: const EdgeInsets.only(left:15, top:40, bottom: 0, right: 25),
+                      padding: const EdgeInsets.only(left: 15, top: 40, bottom: 0, right: 25),
                       child: Column(
                         children: [
                           Row(
                             children: [
-                              Image.asset('assets/images/netflix_logo.png', width: 15,),
+                              Image.asset(
+                                'assets/images/netflix_logo.png',
+                                width: 15,
+                              ),
                               const Spacer(),
                               const Icon(Icons.cast),
-                              const SizedBox(width: 15,),
-                              Image.asset('assets/images/user.png', width: 25,),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Image.asset(
+                                'assets/images/user.png',
+                                width: 25,
+                              ),
                             ],
                           ),
                           SizedBox(
-                            height: 60 - (40 * _scrollOffset/140),
+                            height: 60 - (40 * _scrollOffset / 140),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
                               child: Row(
@@ -242,10 +222,7 @@ class _HomeState extends State<Home> {
                                       children: [
                                         Text(hp.category ?? 'Categories'),
                                         const SizedBox(width: 5),
-                                        Opacity(
-                                          opacity:  1 - (_scrollOffset/140),
-                                          child: const Icon(Remix.arrow_down_s_line)
-                                        ),
+                                        Opacity(opacity: 1 - (_scrollOffset / 140), child: const Icon(Remix.arrow_down_s_line)),
                                       ],
                                     ),
                                   ),
@@ -254,60 +231,50 @@ class _HomeState extends State<Home> {
                             ),
                           )
                         ],
-                      )
-                    ),
-                  ),
-                ],
-              );
-            }
+                      )),
+                ),
+              ],
+            );
+          }
+        } else {
+          if (hp.movies == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else {
-            if(hp.movies == null) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              List<Movie> data = hp.movies!;
-              return Stack(
-                children: [
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: ListView(
-                      controller: _scrollControllerGenre,
-                      padding: const EdgeInsets.all(0),
-                      children: [
-                        Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.posterPath}',
-                              placeholder: (_, url) => AspectRatio(
-                                aspectRatio: 0.67,
-                                child: Container(
-                                  width: double.infinity,
-                                  color: bgColor,
-                                ),
+            List<Movie> data = hp.movies!;
+            return Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: ListView(
+                    controller: _scrollControllerGenre,
+                    padding: const EdgeInsets.all(0),
+                    children: [
+                      Stack(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.posterPath}',
+                            placeholder: (_, url) => AspectRatio(
+                              aspectRatio: 0.67,
+                              child: Container(
+                                width: double.infinity,
+                                color: bgColor,
                               ),
-                              width: double.infinity,
                             ),
-                            Positioned(
+                            width: double.infinity,
+                          ),
+                          Positioned(
                               left: 0,
                               right: 0,
                               bottom: 0,
                               child: Container(
                                 padding: const EdgeInsets.all(20),
                                 width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black,
-                                      Colors.transparent
-                                    ]
-                                  )
-                                ),
+                                decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.bottomCenter, end: Alignment.topCenter, colors: [Colors.black, Colors.transparent])),
                                 child: SizedBox(
                                   width: double.infinity,
                                   child: Wrap(
@@ -317,56 +284,42 @@ class _HomeState extends State<Home> {
                                       Column(
                                         children: [
                                           Text(
-                                            data.first.name ?? data.first.title!, 
+                                            data.first.name ?? data.first.title!,
                                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 32),
                                             textAlign: TextAlign.center,
                                           ),
                                           const SizedBox(height: 15),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: List.generate(data.first.genre!.length, (index) => 
-                                              Row(
-                                                children: [
-                                                  Text(data.first.genre![index]),
-                                                  if(index != data.first.genre!.length - 1)
-                                                  const GenreSeparator(),
-                                                ],
-                                              )
-                                            )
-                                          ),
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: List.generate(
+                                                  data.first.genre!.length,
+                                                  (index) => Row(
+                                                        children: [
+                                                          Text(data.first.genre![index]),
+                                                          if (index != data.first.genre!.length - 1) const GenreSeparator(),
+                                                        ],
+                                                      ))),
                                           const SizedBox(height: 10),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {}, 
-                                                    child: const Icon(Icons.add_outlined)
-                                                  ),
-                                                  const Text("My List")
-                                                ],
+                                                children: [GestureDetector(onTap: () {}, child: const Icon(Icons.add_outlined)), const Text("My List")],
                                               ),
                                               const SizedBox(width: 25),
                                               ElevatedButton(
-                                                onPressed: () => Navigator.pushNamed(context, '/detail', arguments: data.first), 
+                                                onPressed: () => Navigator.pushNamed(context, '/detail', arguments: data.first),
                                                 style: primaryButton,
-                                                child: Row(
-                                                  children: const [
+                                                child: const Row(
+                                                  children: [
                                                     Icon(Icons.play_arrow),
-                                                    Text("Play")
-                                                  ]
-                                                )
+                                                    Text("Play"),
+                                                  ],
+                                                ),
                                               ),
                                               const SizedBox(width: 25),
                                               Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {}, 
-                                                    child: const Icon(Icons.info_outline)
-                                                  ),
-                                                  const Text("Info")
-                                                ],
+                                                children: [GestureDetector(onTap: () {}, child: const Icon(Icons.info_outline)), const Text("Info")],
                                               )
                                             ],
                                           )
@@ -375,79 +328,74 @@ class _HomeState extends State<Home> {
                                     ],
                                   ),
                                 ),
-                              )
-                            )
+                              ))
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Text(hp.category!, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            ),
+                            const SizedBox(height: 15),
+                            Builder(builder: (context) {
+                              List<Movie> display = hp.movies!.sublist(1, hp.movies!.length);
+                              return GridView.count(
+                                // controller: _search,
+                                padding: const EdgeInsets.all(15),
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 5,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                crossAxisSpacing: 0,
+                                childAspectRatio: 9 / 13,
+                                children: List.generate(display.length, (index) {
+                                  Movie movie = display[index];
+                                  return CardMovie(movie: movie, noMargin: true);
+                                }),
+                              );
+                            })
                           ],
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 20),
-                                child: Text(hp.category!, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              ),
-                              const SizedBox(height: 15),
-                              Builder(
-                                builder: (context) {
-                                  List<Movie> display = hp.movies!.sublist(1, hp.movies!.length);
-                                  return GridView.count(
-                                    // controller: _search,
-                                    padding: const EdgeInsets.all(15),
-                                    crossAxisCount: 3,
-                                    mainAxisSpacing: 5,
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    crossAxisSpacing: 0,
-                                    childAspectRatio: 9/13,
-                                    children: List.generate(
-                                      display.length, (index) {
-                                        Movie movie = display[index];
-                                        return CardMovie(movie: movie, noMargin: true);
-                                      }
-                                    ),
-                                  );
-                                }
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black,
-                                Colors.black.withOpacity(_scrollOffset / 145)
-                              ]
-                            )
-                          ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Column(
+                    children: [
+                      Container(
+                          decoration:
+                              BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, Colors.black.withOpacity(_scrollOffset / 145)])),
                           width: double.infinity,
-                          padding: const EdgeInsets.only(left:15, top:40, bottom: 0, right: 25),
+                          padding: const EdgeInsets.only(left: 15, top: 40, bottom: 0, right: 25),
                           child: Column(
                             children: [
                               Row(
                                 children: [
-                                  Image.asset('assets/images/netflix_logo.png', width: 15,),
+                                  Image.asset(
+                                    'assets/images/netflix_logo.png',
+                                    width: 15,
+                                  ),
                                   const Spacer(),
                                   const Icon(Icons.cast),
-                                  const SizedBox(width: 15,),
-                                  Image.asset('assets/images/user.png', width: 25,),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Image.asset(
+                                    'assets/images/user.png',
+                                    width: 25,
+                                  ),
                                 ],
                               ),
                               SizedBox(
-                                height: 60 - (40 * _scrollOffset/140),
+                                height: 60 - (40 * _scrollOffset / 140),
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
                                   child: Row(
@@ -466,10 +414,7 @@ class _HomeState extends State<Home> {
                                           children: [
                                             Text(hp.category ?? 'Categories'),
                                             const SizedBox(width: 5),
-                                            Opacity(
-                                              opacity:  1 - (_scrollOffset/140),
-                                              child: const Icon(Remix.arrow_down_s_line)
-                                            ),
+                                            Opacity(opacity: 1 - (_scrollOffset / 140), child: const Icon(Remix.arrow_down_s_line)),
                                           ],
                                         ),
                                       ),
@@ -478,19 +423,16 @@ class _HomeState extends State<Home> {
                                 ),
                               )
                             ],
-                          )
-                        ),
-                        if(hp.isLoadingCategory && hp.movies != null)
-                          LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
-                      ],
-                    ),
+                          )),
+                      if (hp.isLoadingCategory && hp.movies != null) LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
+                    ],
                   ),
-                ],
-              );
-            }
+                ),
+              ],
+            );
           }
         }
-      ),
+      }),
     );
   }
 }
