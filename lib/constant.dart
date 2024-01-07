@@ -3,6 +3,9 @@ import "package:flutter/material.dart";
 Color primaryColor = const Color(0xffEE1520);
 Color bgColor = const Color(0xff191919);
 ButtonStyle primaryButton = ButtonStyle(
+  shape: MaterialStateProperty.all(
+    RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
+  ),
   backgroundColor: MaterialStateProperty.all(Colors.white),
   surfaceTintColor: MaterialStateProperty.all(Colors.black),
   foregroundColor: MaterialStateProperty.all(Colors.black),
@@ -10,6 +13,10 @@ ButtonStyle primaryButton = ButtonStyle(
 );
 
 ButtonStyle defaultButton = ButtonStyle(
+  shape: MaterialStateProperty.all(
+    RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
+  ),
+  backgroundColor: MaterialStateProperty.all(primaryColor),
   foregroundColor: MaterialStateProperty.all(Colors.white)
 );
 

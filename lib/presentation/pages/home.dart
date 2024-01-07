@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
 import 'package:netflix/data/model/home_model.dart';
+import 'package:netflix/data/model/movie_model.dart';
 import 'package:netflix/presentation/provider/home_provider.dart';
 import 'package:netflix/presentation/widget/card_movie.dart';
 import 'package:netflix/presentation/widget/genre_separator.dart';
@@ -90,7 +91,7 @@ class _HomeState extends State<Home> {
                       Stack(
                         children: [
                           CachedNetworkImage(
-                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner!.posterPath}',
+                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner?.tmdb?.posterPath}',
                             placeholder: (_, url) => AspectRatio(
                               aspectRatio: 0.67,
                               child: Container(
@@ -117,7 +118,7 @@ class _HomeState extends State<Home> {
                                       Column(
                                         children: [
                                           Text(
-                                            data.banner!.name!,
+                                            data.banner?.tmdb?.name ?? '-',
                                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 32),
                                             textAlign: TextAlign.center,
                                           ),
@@ -125,11 +126,11 @@ class _HomeState extends State<Home> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: List.generate(
-                                              data.banner!.genre!.length,
+                                              data.banner?.tmdb?.genres?.length ?? 0,
                                               (index) => Row(
                                                 children: [
-                                                  Text(data.banner!.genre![index]),
-                                                  if (index != data.banner!.genre!.length - 1) const GenreSeparator(),
+                                                  Text(data.banner?.tmdb?.genres?[index].name ?? '-'),
+                                                  if (index != data.banner!.tmdb!.genres!.length - 1) const GenreSeparator(),
                                                 ],
                                               ),
                                             ),
@@ -172,10 +173,9 @@ class _HomeState extends State<Home> {
                               ))
                         ],
                       ),
-                      SectionHome(data: data.action!, title: 'Action'),
+                      SectionHome(data: data.trendingMovies!, title: 'Trending Movie'),
                       const SectionShop(),
-                      SectionHome(data: data.romance!, title: 'Romance'),
-                      SectionHome(data: data.series!, title: 'Series'),
+                      SectionHome(data: data.trendingTv!, title: 'Trending Series'),
                     ],
                   ),
                 ),
@@ -257,7 +257,7 @@ class _HomeState extends State<Home> {
                       Stack(
                         children: [
                           CachedNetworkImage(
-                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.posterPath}',
+                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.tmdb?.posterPath}',
                             placeholder: (_, url) => AspectRatio(
                               aspectRatio: 0.67,
                               child: Container(
@@ -284,7 +284,7 @@ class _HomeState extends State<Home> {
                                       Column(
                                         children: [
                                           Text(
-                                            data.first.name ?? data.first.title!,
+                                            data.first.tmdb?.name ?? data.first.title!,
                                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 32),
                                             textAlign: TextAlign.center,
                                           ),
@@ -292,11 +292,11 @@ class _HomeState extends State<Home> {
                                           Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: List.generate(
-                                                  data.first.genre!.length,
+                                                  data.first.tmdb?.genres?.length ?? 0,
                                                   (index) => Row(
                                                         children: [
-                                                          Text(data.first.genre![index]),
-                                                          if (index != data.first.genre!.length - 1) const GenreSeparator(),
+                                                          Text(data.first.tmdb!.genres![index].name!),
+                                                          if (index != data.first.tmdb!.genres!.length - 1) const GenreSeparator(),
                                                         ],
                                                       ))),
                                           const SizedBox(height: 10),

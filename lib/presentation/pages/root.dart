@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:netflix/constant.dart';
 import 'package:netflix/presentation/pages/home.dart';
@@ -22,7 +21,7 @@ class _RootState extends State<Root> {
   bool _isShowGenre = false;
 
   void _closeGenre() async {
-    for(int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) {
       await Future.delayed(const Duration(milliseconds: 25));
       setState(() {
         _opacity -= 0.2;
@@ -39,7 +38,7 @@ class _RootState extends State<Root> {
       _isShowGenre = true;
     });
 
-    for(int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) {
       await Future.delayed(const Duration(milliseconds: 25));
       setState(() {
         _opacity += 0.2;
@@ -49,11 +48,7 @@ class _RootState extends State<Root> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> body = [
-      Home(openGenre: _openGenre),
-      const Search(),
-      const Profile()
-    ];
+    final List<Widget> body = [Home(openGenre: _openGenre), const Search(), const Profile()];
 
     return Stack(
       children: [
@@ -68,34 +63,24 @@ class _RootState extends State<Root> {
             unselectedFontSize: 10,
             selectedItemColor: Colors.white,
             unselectedItemColor: Colors.white.withOpacity(0.5),
-            backgroundColor: Colors.black, 
+            backgroundColor: Colors.black,
             items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Remix.home_2_line),
-                label: "Home"   
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Remix.search_2_line),
-                label: "Search"
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Remix.menu_line),
-                label: "More"
-              )
+              BottomNavigationBarItem(icon: Icon(Remix.home_2_line), label: "Home"),
+              BottomNavigationBarItem(icon: Icon(Remix.search_2_line), label: "Search"),
+              BottomNavigationBarItem(icon: Icon(Remix.menu_line), label: "More")
             ],
           ),
         ),
-        if(_isShowGenre)
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: _opacity * 30, sigmaY: _opacity * 30),
-            child: Opacity(
-              opacity: _opacity,
-              child: Stack(
-                children: [
-                  Consumer<HomeProvider>(
-                    builder: (_, hp, __) {
+        if (_isShowGenre)
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: _opacity * 30, sigmaY: _opacity * 30),
+              child: Opacity(
+                opacity: _opacity,
+                child: Stack(
+                  children: [
+                    Consumer<HomeProvider>(builder: (_, hp, __) {
                       return ListView.separated(
                         padding: const EdgeInsets.fromLTRB(0, 50, 0, 100),
                         separatorBuilder: (context, index) => const SizedBox(height: 35),
@@ -107,33 +92,23 @@ class _RootState extends State<Root> {
                               _closeGenre();
                             },
                             child: Text(
-                              genre[index], 
+                              genre[index],
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white.withOpacity(0.8)
-                              ),
+                              style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(0.8)),
                             ),
                           );
                         },
                       );
-                    }
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      child: GestureDetector(
-                        onTap: _closeGenre,
-                        child: const Icon(Remix.close_circle_fill, size: 65)
-                      )
-                    ),
-                  )
-                ],
+                    }),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(margin: const EdgeInsets.only(bottom: 20), child: GestureDetector(onTap: _closeGenre, child: const Icon(Remix.close_circle_fill, size: 65))),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        )
+          )
       ],
     );
   }
