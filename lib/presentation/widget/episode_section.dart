@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:netflix/data/model/episode_model.dart';
-import 'package:netflix/data/model/home_model.dart';
+import 'package:netflix/data/model/movie_model.dart';
 
 class EpisodeSection extends StatelessWidget {
   const EpisodeSection({super.key, required this.data, required this.episodes, required this.play});
@@ -29,8 +29,8 @@ class EpisodeSection extends StatelessWidget {
                     width: 120,
                     errorWidget: (context, url, error) => Opacity(
                       opacity: 0.3,
-                      child: CachedNetworkImage(
-                        imageUrl: 'https://wtwp.com/wp-content/uploads/2015/06/placeholder-image-300x225.png',
+                      child: Image.asset(
+                        'assets/images/placeholder.png',
                         width: 120,
                       ),
                     ),

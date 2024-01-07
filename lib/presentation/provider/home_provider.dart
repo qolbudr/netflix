@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:get_it/get_it.dart';
 import 'package:netflix/data/api.dart';
 import 'package:netflix/data/model/home_model.dart';
+import 'package:netflix/data/model/movie_model.dart';
 
 class HomeProvider extends ChangeNotifier {
   HomeModel? data;
@@ -23,7 +24,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void setCategory(String? data) {
-    if(data != null) {
+    if (data != null) {
       category = data;
       notifyListeners();
 
@@ -36,7 +37,7 @@ class HomeProvider extends ChangeNotifier {
 
   Future<void> getCategory(int page) async {
     try {
-      if(page == 1) {
+      if (page == 1) {
         movies = null;
       }
       isLoadingCategory = true;
@@ -44,7 +45,7 @@ class HomeProvider extends ChangeNotifier {
 
       final response = await getIt<Api>().getCategory(category!.toLowerCase(), page);
 
-      if(page == 1) {
+      if (page == 1) {
         movies = response;
       } else {
         movies!.addAll(response);

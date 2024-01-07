@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:netflix/data/model/home_model.dart';
+import 'package:netflix/data/model/movie_model.dart';
 import 'package:netflix/presentation/widget/card_movie.dart';
 
 class SectionHome extends StatelessWidget {
@@ -25,9 +25,7 @@ class SectionHome extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: List.generate(data.length, (index) => 
-                  CardMovie(movie: data[index])
-                ),
+                children: List.generate(data.length, (index) => CardMovie(movie: data[index])),
               ),
             )
           ],
