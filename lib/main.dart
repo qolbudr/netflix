@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:netflix/constant.dart';
-import 'package:netflix/data/model/home_model.dart';
+import 'package:netflix/data/model/movie_model.dart';
 import 'package:netflix/presentation/pages/detail.dart';
 import 'package:netflix/presentation/pages/player.dart';
 import 'package:netflix/presentation/pages/root.dart';
