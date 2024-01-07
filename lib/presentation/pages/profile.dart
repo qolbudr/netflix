@@ -68,7 +68,7 @@ class Profile extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
-              Text('Version: 0.0.1(0008) 1.4.0-002', style: TextStyle(color: Colors.white.withOpacity(0.5)))
+              Text('Version: 0.0.2(1051) 0.0.7-001', style: TextStyle(color: Colors.white.withOpacity(0.5)))
             ],
           )
         ],
