@@ -1,4 +1,6 @@
-import 'package:netflix/data/model/movie_model.dart';
+
+
+import 'package:netflix/models/movie_model.dart';
 
 class HomeModel {
   Movie? banner;

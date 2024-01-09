@@ -1,11 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:netflix/constant.dart';
-import 'package:netflix/presentation/pages/home.dart';
-import 'package:netflix/presentation/pages/profile.dart';
-import 'package:netflix/presentation/pages/search.dart';
-import 'package:netflix/presentation/provider/home_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:netflix/controllers/home_controller.dart';
+import 'package:netflix/views/pages/home.dart';
+import 'package:netflix/views/pages/profile.dart';
+import 'package:netflix/views/pages/search.dart';
 import 'package:remixicon/remixicon.dart';
 
 class Root extends StatefulWidget {
@@ -16,6 +16,7 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
+  final HomeController _c = Get.put(HomeController());
   int _index = 0;
   double _opacity = 0;
   bool _isShowGenre = false;
@@ -71,7 +72,7 @@ class _RootState extends State<Root> {
             ],
           ),
         ),
-        if (_isShowGenre)
+        if (_isShowGenre) ...[
           Scaffold(
             backgroundColor: Colors.transparent,
             body: BackdropFilter(
@@ -80,26 +81,24 @@ class _RootState extends State<Root> {
                 opacity: _opacity,
                 child: Stack(
                   children: [
-                    Consumer<HomeProvider>(builder: (_, hp, __) {
-                      return ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 100),
-                        separatorBuilder: (context, index) => const SizedBox(height: 35),
-                        itemCount: genre.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              hp.setCategory(genre[index]);
-                              _closeGenre();
-                            },
-                            child: Text(
-                              genre[index],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(0.8)),
-                            ),
-                          );
-                        },
-                      );
-                    }),
+                    ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(0, 50, 0, 100),
+                      separatorBuilder: (context, index) => const SizedBox(height: 35),
+                      itemCount: genre.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            _c.setCategory(genre[index]);
+                            _closeGenre();
+                          },
+                          child: Text(
+                            genre[index],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(0.8)),
+                          ),
+                        );
+                      },
+                    ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(margin: const EdgeInsets.only(bottom: 20), child: GestureDetector(onTap: _closeGenre, child: const Icon(Remix.close_circle_fill, size: 65))),
@@ -109,6 +108,7 @@ class _RootState extends State<Root> {
               ),
             ),
           )
+        ]
       ],
     );
   }

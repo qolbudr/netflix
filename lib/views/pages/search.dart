@@ -1,11 +1,11 @@
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:netflix/constant.dart';
-import 'package:netflix/data/model/movie_model.dart';
-import 'package:netflix/presentation/provider/home_provider.dart';
-import 'package:netflix/presentation/provider/search_provider.dart';
-import 'package:netflix/presentation/widget/card_movie.dart';
-import 'package:netflix/presentation/widget/section_newest.dart';
-import 'package:provider/provider.dart';
+import 'package:netflix/controllers/home_controller.dart';
+import 'package:netflix/controllers/search_controller.dart' as base;
+import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/views/widget/card_movie.dart';
+import 'package:netflix/views/widget/section_newest.dart';
 import 'package:remixicon/remixicon.dart';
 import 'dart:async';
 
@@ -17,6 +17,9 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  final base.SearchController _c = Get.put(base.SearchController());
+  final HomeController _hc = Get.put(HomeController());
+
   final _search = ScrollController();
   final _text = TextEditingController();
   bool _isSearch = false;
@@ -36,7 +39,7 @@ class _SearchState extends State<Search> {
       });
 
       Future.microtask(() {
-        Provider.of<SearchProvider>(context, listen: false).getSearch(_searchBody);
+        _c.getSearch(_searchBody);
       });
     }
   }
@@ -44,6 +47,8 @@ class _SearchState extends State<Search> {
   @override
   void dispose() {
     _debounce?.cancel();
+    _search.dispose();
+    _text.dispose();
     super.dispose();
   }
 
@@ -74,7 +79,7 @@ class _SearchState extends State<Search> {
                                     _debounce = Timer(const Duration(milliseconds: 500), () {
                                       _searchBody['title'] = value;
                                       _searchBody['page'] = 1;
-                                      Provider.of<SearchProvider>(context, listen: false).getSearch(_searchBody);
+                                      _c.getSearch(_searchBody);
                                     });
                                   });
                                 },
@@ -138,64 +143,60 @@ class _SearchState extends State<Search> {
                 );
               }
             }),
-            Consumer<SearchProvider>(builder: (_, sp, __) {
-              if (sp.isLoading && sp.newestPage == 1) {
-                return const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
+            if (_c.status.isLoading) ...[
+              const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            ] else ...[
+              if (_searchBody['title'] == '') ...[
+                Expanded(
+                  child: Stack(
+                    children: [
+                      if (_hc.status.isLoading) ...[
+                        Center(child: CircularProgressIndicator(color: primaryColor))
+                      ] else ...[
+                        ListView(
+                          padding: const EdgeInsets.all(15),
+                          children: [
+                            SectionNewest(data: [..._hc.data?.trendingMovies ?? [], ..._hc.data?.trendingTv ?? []]),
+                          ],
+                        )
+                      ],
+                    ],
                   ),
-                );
-              } else {
-                if (_searchBody['title'] == '') {
-                  return Expanded(
+                ),
+              ] else ...[
+                if (_c.status.isLoading && _searchBody['page'] == 1) ...[
+                  const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                ] else ...[
+                  Expanded(
                     child: Stack(
                       children: [
-                        Consumer<HomeProvider>(builder: (_, hp, __) {
-                          if (hp.isLoading) {
-                            return Center(child: CircularProgressIndicator(color: primaryColor));
-                          } else {
-                            return ListView(
-                              padding: const EdgeInsets.all(15),
-                              children: [
-                                SectionNewest(data: [...hp.data?.trendingMovies ?? [], ...hp.data?.trendingTv ?? []]),
-                              ],
-                            );
-                          }
-                        }),
+                        GridView.count(
+                          controller: _search,
+                          padding: const EdgeInsets.all(15),
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 9 / 13,
+                          children: List.generate(_c.search.length, (index) {
+                            Movie movie = _c.search[index];
+                            return CardMovie(movie: movie, noMargin: true);
+                          }),
+                        ),
+                        if (_c.status.isLoading && _searchBody['page'] != 1) LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
                       ],
                     ),
-                  );
-                } else {
-                  if (sp.isLoading && _searchBody['page'] == 1) {
-                    return const Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  } else {
-                    return Expanded(
-                      child: Stack(
-                        children: [
-                          GridView.count(
-                            controller: _search,
-                            padding: const EdgeInsets.all(15),
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 5,
-                            crossAxisSpacing: 0,
-                            childAspectRatio: 9 / 13,
-                            children: List.generate(sp.search!.length, (index) {
-                              Movie movie = sp.search![index];
-                              return CardMovie(movie: movie, noMargin: true);
-                            }),
-                          ),
-                          if (sp.isLoading && _searchBody['page'] != 1) LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
-                        ],
-                      ),
-                    );
-                  }
-                }
-              }
-            })
+                  ),
+                ]
+              ]
+            ]
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import 'package:netflix/data/model/movie_model.dart';
-import 'package:netflix/presentation/widget/card_movie.dart';
+import "package:netflix/models/movie_model.dart";
+import "package:netflix/views/widget/card_movie.dart";
 
 class SectionHome extends StatelessWidget {
   const SectionHome({super.key, required this.data, required this.title});

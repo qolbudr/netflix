@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
-import 'package:netflix/data/model/movie_model.dart';
+import 'package:netflix/models/movie_model.dart';
 
 class MediaSection extends StatelessWidget {
   const MediaSection({super.key, required this.data});

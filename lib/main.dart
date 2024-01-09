@@ -1,20 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:netflix/constant.dart';
-import 'package:netflix/data/model/movie_model.dart';
-import 'package:netflix/presentation/pages/detail.dart';
-import 'package:netflix/presentation/pages/player.dart';
-import 'package:netflix/presentation/pages/root.dart';
-import 'package:netflix/injection.dart' as di;
-import 'package:netflix/presentation/provider/detail_provider.dart';
-import 'package:netflix/presentation/provider/home_provider.dart';
-import 'package:netflix/presentation/provider/search_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:netflix/views/pages/detail.dart';
+import 'package:netflix/views/pages/player.dart';
+import 'package:netflix/views/pages/root.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  di.init();
   runApp(const MyApp());
 }
 
@@ -22,31 +15,16 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => di.locator<HomeProvider>()),
-        ChangeNotifierProvider(create: (_) => di.locator<DetailProvider>()),
-        ChangeNotifierProvider(create: (_) => di.locator<SearchProvider>()),
+    return GetMaterialApp(
+      title: 'Netflix',
+      debugShowCheckedModeBanner: false,
+      theme: themeData,
+      home: const SplashScreen(),
+      getPages: [
+        GetPage(name: '/root', page: () => const Root()),
+        GetPage(name: '/detail', page: () => const Detail()),
+        GetPage(name: '/player', page: () => Player()),
       ],
-      child: MaterialApp(
-          title: 'Netflix',
-          debugShowCheckedModeBanner: false,
-          theme: themeData,
-          home: const SplashScreen(),
-          onGenerateRoute: (RouteSettings settings) {
-            switch (settings.name) {
-              case '/root':
-                return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
-              case '/detail':
-                final Movie data = settings.arguments as Movie;
-                return CupertinoPageRoute(builder: (_) => Detail(data: data), settings: const RouteSettings(name: '/detail'));
-              case '/player':
-                final PlayerArgument data = settings.arguments as PlayerArgument;
-                return CupertinoPageRoute(builder: (_) => Player(argument: data), settings: const RouteSettings(name: '/detail'));
-              default:
-                return CupertinoPageRoute(builder: (_) => const Root(), settings: const RouteSettings(name: '/root'));
-            }
-          }),
     );
   }
 }

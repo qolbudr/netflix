@@ -1,4 +1,6 @@
-import 'package:netflix/data/model/tmdb_model.dart';
+
+
+import 'package:netflix/models/tmdb_model.dart';
 
 class Movie {
   num? season;

@@ -2,13 +2,13 @@ import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/route_manager.dart';
 import 'package:netflix/constant.dart';
-import 'package:netflix/data/model/movie_model.dart';
+import 'package:netflix/models/movie_model.dart';
 
 class Player extends StatelessWidget {
-  const Player({super.key, required this.argument});
-
-  final PlayerArgument argument;
+  Player({super.key});
+  final PlayerArgument argument = Get.arguments;
 
   @override
   Widget build(BuildContext context) {

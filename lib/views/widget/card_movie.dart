@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
-import 'package:netflix/data/model/movie_model.dart';
+import 'package:netflix/models/movie_model.dart';
 
 class CardMovie extends StatelessWidget {
   const CardMovie({super.key, required this.movie, this.noMargin});

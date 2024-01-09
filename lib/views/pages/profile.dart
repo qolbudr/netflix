@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:netflix/presentation/widget/menu_tile.dart';
+import 'package:netflix/views/widget/menu_tile.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:url_launcher/url_launcher.dart';
 

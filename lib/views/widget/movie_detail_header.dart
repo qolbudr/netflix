@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
-import 'package:netflix/data/model/movie_model.dart';
+import 'package:netflix/models/movie_model.dart';
 import 'package:remixicon/remixicon.dart';
 
 class MovieDetailHeader extends StatelessWidget {

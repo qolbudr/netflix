@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:netflix/constant.dart';
-import 'package:netflix/data/model/home_model.dart';
-import 'package:netflix/data/model/movie_model.dart';
-import 'package:netflix/presentation/provider/home_provider.dart';
-import 'package:netflix/presentation/widget/card_movie.dart';
-import 'package:netflix/presentation/widget/genre_separator.dart';
-import 'package:netflix/presentation/widget/section_home.dart';
-import 'package:netflix/presentation/widget/section_shop.dart';
-import 'package:provider/provider.dart';
+import 'package:netflix/controllers/home_controller.dart';
+import 'package:netflix/models/home_model.dart';
+import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/views/widget/card_movie.dart';
+import 'package:netflix/views/widget/genre_separator.dart';
+import 'package:netflix/views/widget/section_home.dart';
+import 'package:netflix/views/widget/section_shop.dart';
 import 'package:remixicon/remixicon.dart';
 
 class Home extends StatefulWidget {
@@ -20,6 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final HomeController _c = Get.put(HomeController());
   double _scrollOffset = 0;
   int page = 1;
   final _scrollController = ScrollController();
@@ -28,9 +29,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      Provider.of<HomeProvider>(context, listen: false).getData();
-    });
+    _c.getData();
     _scrollController.addListener(_onScroll);
     _scrollControllerGenre.addListener(_onScrollGenre);
   }
@@ -59,49 +58,53 @@ class _HomeState extends State<Home> {
         page++;
       });
 
-      Future.microtask(() {
-        Provider.of<HomeProvider>(context, listen: false).getCategory(page);
-      });
+      _c.getCategory(page);
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _scrollControllerGenre.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Consumer<HomeProvider>(builder: (_, hp, __) {
-        if (hp.category == null) {
-          if (hp.isLoading == true) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            HomeModel data = hp.data!;
-            return Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: ListView(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(0),
-                    children: [
-                      Stack(
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner?.tmdb?.posterPath}',
-                            placeholder: (_, url) => AspectRatio(
-                              aspectRatio: 0.67,
-                              child: Container(
-                                width: double.infinity,
-                                color: bgColor,
+      body: Builder(
+        builder: (context) {
+          if (_c.category == null) {
+            if (_c.status.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              HomeModel data = _c.data!;
+              return Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: ListView(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(0),
+                      children: [
+                        Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner?.tmdb?.posterPath}',
+                              placeholder: (_, url) => AspectRatio(
+                                aspectRatio: 0.67,
+                                child: Container(
+                                  width: double.infinity,
+                                  color: bgColor,
+                                ),
                               ),
+                              width: double.infinity,
                             ),
-                            width: double.infinity,
-                          ),
-                          Positioned(
+                            Positioned(
                               left: 0,
                               right: 0,
                               bottom: 0,
@@ -170,20 +173,21 @@ class _HomeState extends State<Home> {
                                     ],
                                   ),
                                 ),
-                              ))
-                        ],
-                      ),
-                      SectionHome(data: data.trendingMovies!, title: 'Trending Movie'),
-                      const SectionShop(),
-                      SectionHome(data: data.trendingTv!, title: 'Trending Series'),
-                    ],
+                              ),
+                            )
+                          ],
+                        ),
+                        SectionHome(data: data.trendingMovies!, title: 'Trending Movie'),
+                        const SectionShop(),
+                        SectionHome(data: data.trendingTv!, title: 'Trending Series'),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
                       decoration:
                           BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, Colors.black.withOpacity(_scrollOffset / 145)])),
                       width: double.infinity,
@@ -220,7 +224,7 @@ class _HomeState extends State<Home> {
                                     onTap: () => widget.openGenre(),
                                     child: Row(
                                       children: [
-                                        Text(hp.category ?? 'Categories'),
+                                        Text(_c.category ?? 'Categories'),
                                         const SizedBox(width: 5),
                                         Opacity(opacity: 1 - (_scrollOffset / 140), child: const Icon(Remix.arrow_down_s_line)),
                                       ],
@@ -231,43 +235,42 @@ class _HomeState extends State<Home> {
                             ),
                           )
                         ],
-                      )),
-                ),
-              ],
-            );
-          }
-        } else {
-          if (hp.movies == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
           } else {
-            List<Movie> data = hp.movies!;
-            return Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: ListView(
-                    controller: _scrollControllerGenre,
-                    padding: const EdgeInsets.all(0),
-                    children: [
-                      Stack(
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.tmdb?.posterPath}',
-                            placeholder: (_, url) => AspectRatio(
-                              aspectRatio: 0.67,
-                              child: Container(
-                                width: double.infinity,
-                                color: bgColor,
+            if (_c.status.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              List<Movie> data = _c.movies;
+              return Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: ListView(
+                      controller: _scrollControllerGenre,
+                      padding: const EdgeInsets.all(0),
+                      children: [
+                        Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.tmdb?.posterPath}',
+                              placeholder: (_, url) => AspectRatio(
+                                aspectRatio: 0.67,
+                                child: Container(
+                                  width: double.infinity,
+                                  color: bgColor,
+                                ),
                               ),
+                              width: double.infinity,
                             ),
-                            width: double.infinity,
-                          ),
-                          Positioned(
+                            Positioned(
                               left: 0,
                               right: 0,
                               bottom: 0,
@@ -290,15 +293,17 @@ class _HomeState extends State<Home> {
                                           ),
                                           const SizedBox(height: 15),
                                           Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: List.generate(
-                                                  data.first.tmdb?.genres?.length ?? 0,
-                                                  (index) => Row(
-                                                        children: [
-                                                          Text(data.first.tmdb!.genres![index].name!),
-                                                          if (index != data.first.tmdb!.genres!.length - 1) const GenreSeparator(),
-                                                        ],
-                                                      ))),
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: List.generate(
+                                              data.first.tmdb?.genres?.length ?? 0,
+                                              (index) => Row(
+                                                children: [
+                                                  Text(data.first.tmdb!.genres![index].name!),
+                                                  if (index != data.first.tmdb!.genres!.length - 1) const GenreSeparator(),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                           const SizedBox(height: 10),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -328,51 +333,60 @@ class _HomeState extends State<Home> {
                                     ],
                                   ),
                                 ),
-                              ))
-                        ],
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Text(hp.category!, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                            ),
-                            const SizedBox(height: 15),
-                            Builder(builder: (context) {
-                              List<Movie> display = hp.movies!.sublist(1, hp.movies!.length);
-                              return GridView.count(
-                                // controller: _search,
-                                padding: const EdgeInsets.all(15),
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 5,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                crossAxisSpacing: 0,
-                                childAspectRatio: 9 / 13,
-                                children: List.generate(display.length, (index) {
-                                  Movie movie = display[index];
-                                  return CardMovie(movie: movie, noMargin: true);
-                                }),
-                              );
-                            })
+                              ),
+                            )
                           ],
                         ),
-                      )
-                    ],
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Text(_c.category!, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              ),
+                              const SizedBox(height: 15),
+                              Builder(builder: (context) {
+                                List<Movie> display = _c.movies.sublist(1, _c.movies.length);
+                                return GridView.count(
+                                  // controller: _search,
+                                  padding: const EdgeInsets.all(15),
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 5,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  crossAxisSpacing: 0,
+                                  childAspectRatio: 9 / 13,
+                                  children: List.generate(display.length, (index) {
+                                    Movie movie = display[index];
+                                    return CardMovie(movie: movie, noMargin: true);
+                                  }),
+                                );
+                              })
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Column(
-                    children: [
-                      Container(
-                          decoration:
-                              BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, Colors.black.withOpacity(_scrollOffset / 145)])),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black,
+                                Colors.black.withOpacity(_scrollOffset / 145),
+                              ],
+                            ),
+                          ),
                           width: double.infinity,
                           padding: const EdgeInsets.only(left: 15, top: 40, bottom: 0, right: 25),
                           child: Column(
@@ -412,7 +426,7 @@ class _HomeState extends State<Home> {
                                         },
                                         child: Row(
                                           children: [
-                                            Text(hp.category ?? 'Categories'),
+                                            Text(_c.category ?? 'Categories'),
                                             const SizedBox(width: 5),
                                             Opacity(opacity: 1 - (_scrollOffset / 140), child: const Icon(Remix.arrow_down_s_line)),
                                           ],
@@ -423,16 +437,18 @@ class _HomeState extends State<Home> {
                                 ),
                               )
                             ],
-                          )),
-                      if (hp.isLoadingCategory && hp.movies != null) LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
-                    ],
+                          ),
+                        ),
+                        if (_c.status.isLoading) LinearProgressIndicator(backgroundColor: bgColor, minHeight: 1)
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
+                ],
+              );
+            }
           }
-        }
-      }),
+        },
+      ),
     );
   }
 }

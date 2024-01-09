@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import 'package:netflix/data/model/movie_model.dart';
-import 'package:netflix/presentation/widget/card_newest.dart';
+import "package:netflix/models/movie_model.dart";
+import "package:netflix/views/widget/card_newest.dart";
 
 class SectionNewest extends StatelessWidget {
   const SectionNewest({super.key, required this.data});

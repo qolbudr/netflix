@@ -1,20 +1,16 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'package:http/http.dart';
-import 'package:netflix/data/model/episode_model.dart';
-import 'package:netflix/data/model/home_model.dart';
-import 'package:netflix/data/model/movie_model.dart';
-import 'package:netflix/data/model/subtitle_path_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:netflix/models/episode_model.dart';
+import 'package:netflix/models/home_model.dart';
+import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/subtitle_path_model.dart';
 
-class Api {
-  Api(this.client);
-  final Client client;
+class ApiServices {
   static String baseURL = 'https://netflix-be-six.vercel.app/api';
-  // static String baseURL = 'http://10.0.2.2:3000';
-
+  
   Future<HomeModel> getHome() async {
     try {
-      final response = await client.get(Uri.parse("$baseURL/home"));
+      final response = await http.get(Uri.parse("$baseURL/home"));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
@@ -30,7 +26,7 @@ class Api {
 
   Future<List<Episodes>> getEpisode(int id, int season) async {
     try {
-      final response = await client.get(Uri.parse("$baseURL/episode?tmdbId=$id&season=$season"));
+      final response = await http.get(Uri.parse("$baseURL/episode?tmdbId=$id&season=$season"));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
@@ -46,7 +42,7 @@ class Api {
 
   Future<List<Movie>> getSearch(String title, int page) async {
     try {
-      final response = await client.get(Uri.parse("$baseURL/search?keyword=$title&page=$page"));
+      final response = await http.get(Uri.parse("$baseURL/search?keyword=$title&page=$page"));
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
@@ -66,7 +62,7 @@ class Api {
 
   Future<List<Movie>> getCategory(String category, int page) async {
     try {
-      final response = await client.get(Uri.parse("$baseURL/genre?genre=$category&page=$page"));
+      final response = await http.get(Uri.parse("$baseURL/genre?genre=$category&page=$page"));
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
@@ -86,7 +82,7 @@ class Api {
 
   Future<Map<String, List<SubtitlePathModel>>> getSubtitlePath(String imdbId) async {
     try {
-      final response = await client.get(Uri.parse("$baseURL/subtitle?imdb=$imdbId"));
+      final response = await http.get(Uri.parse("$baseURL/subtitle?imdb=$imdbId"));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
@@ -103,7 +99,7 @@ class Api {
 
   Future<String> getSubtitleRawData(String imdbId, String path) async {
     try {
-      final response = await client.get(Uri.parse("$baseURL/subtitle?imdb=$imdbId&path=$path"));
+      final response = await http.get(Uri.parse("$baseURL/subtitle?imdb=$imdbId&path=$path"));
 
       if (response.statusCode == 200) {
         return response.body;
@@ -115,37 +111,37 @@ class Api {
     }
   }
 
-  Future<Map<String, dynamic>> getPlayer(String link, String? episode) async {
-    try {
-      Response response;
+  // Future<Map<String, dynamic>> getPlayer(String link, String? episode) async {
+  //   try {
+  //     Response response;
 
-      if (episode == null) {
-        response = await client.get(Uri.parse("$baseURL/link?link=$link"));
-      } else {
-        response = await client.get(Uri.parse("$baseURL/link?link=$link&episode=$episode"));
-      }
+  //     if (episode == null) {
+  //       response = await http.get(Uri.parse("$baseURL/link?link=$link"));
+  //     } else {
+  //       response = await http.get(Uri.parse("$baseURL/link?link=$link&episode=$episode"));
+  //     }
 
-      if (response.statusCode == 200) {
-        Map<String, dynamic> data = jsonDecode(response.body);
+  //     if (response.statusCode == 200) {
+  //       Map<String, dynamic> data = jsonDecode(response.body);
 
-        final newResponse = await client.get(Uri.parse(data['link']), headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        });
+  //       final newResponse = await http.get(Uri.parse(data['link']), headers: {
+  //         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  //       });
 
-        final responseNew = await client.post(
-          Uri.parse("$baseURL/data"),
-          headers: {'Content-type': 'application/json'},
-          body: jsonEncode({"data": newResponse.body}),
-        );
+  //       final responseNew = await http.post(
+  //         Uri.parse("$baseURL/data"),
+  //         headers: {'Content-type': 'application/json'},
+  //         body: jsonEncode({"data": newResponse.body}),
+  //       );
 
-        log(responseNew.body);
+  //       log(responseNew.body);
 
-        return jsonDecode(responseNew.body);
-      } else {
-        throw Exception('Maaf server sedang sibuk');
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
+  //       return jsonDecode(responseNew.body);
+  //     } else {
+  //       throw Exception('Maaf server sedang sibuk');
+  //     }
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 }
