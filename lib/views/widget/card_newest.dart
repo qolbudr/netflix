@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 import 'package:remixicon/remixicon.dart';
 
 class CardNewest extends StatelessWidget {
   const CardNewest({super.key, required this.movie});
-  final Movie movie;
+  final Tmdb movie;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class CardNewest extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(
-                imageUrl: 'https://image.tmdb.org/t/p/w200/${movie.tmdb?.backdropPath}',
+                imageUrl: 'https://image.tmdb.org/t/p/w200/${movie.backdropPath}',
                 width: 120,
                 errorWidget: (context, url, error) => Opacity(
                   opacity: 0.3,
@@ -39,7 +39,7 @@ class CardNewest extends StatelessWidget {
             ),
             const SizedBox(width: 15),
             Expanded(
-              child: Text(movie.tmdb?.name ?? '-', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white.withOpacity(0.8))),
+              child: Text(movie.name ?? '-', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white.withOpacity(0.8))),
             ),
             const SizedBox(width: 15),
             const Icon(Remix.play_circle_line, size: 30)

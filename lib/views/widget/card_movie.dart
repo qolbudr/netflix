@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 
 class CardMovie extends StatelessWidget {
   const CardMovie({super.key, required this.movie, this.noMargin});
   final bool? noMargin;
-  final Movie movie;
+  final Tmdb movie;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class CardMovie extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5),
           child: CachedNetworkImage(
-            imageUrl: 'https://image.tmdb.org/t/p/w200/${movie.tmdb?.posterPath}',
+            imageUrl: 'https://image.tmdb.org/t/p/w200/${movie.posterPath}',
             width: 120,
             placeholder: (_, url) => AspectRatio(
               aspectRatio: 0.71,

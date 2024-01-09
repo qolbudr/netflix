@@ -1,26 +1,26 @@
 
 
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 
 class HomeModel {
-  Movie? banner;
-  List<Movie>? trendingMovies;
-  List<Movie>? trendingTv;
+  Tmdb? banner;
+  List<Tmdb>? trendingMovies;
+  List<Tmdb>? trendingTv;
 
   HomeModel({this.banner, this.trendingMovies, this.trendingTv});
 
   HomeModel.fromJson(Map<String, dynamic> json) {
-    banner = json['banner'] != null ? Movie.fromJson(json['banner']) : null;
+    banner = json['banner'] != null ? Tmdb.fromJson(json['banner']) : null;
     if (json['trendingMovies'] != null) {
-      trendingMovies = <Movie>[];
+      trendingMovies = <Tmdb>[];
       json['trendingMovies'].forEach((v) {
-        trendingMovies!.add(Movie.fromJson(v));
+        trendingMovies!.add(Tmdb.fromJson(v));
       });
     }
     if (json['trendingTv'] != null) {
-      trendingTv = <Movie>[];
+      trendingTv = <Tmdb>[];
       json['trendingTv'].forEach((v) {
-        trendingTv!.add(Movie.fromJson(v));
+        trendingTv!.add(Tmdb.fromJson(v));
       });
     }
   }

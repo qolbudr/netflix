@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:netflix/constant.dart';
 import 'package:netflix/controllers/home_controller.dart';
 import 'package:netflix/models/home_model.dart';
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 import 'package:netflix/views/widget/card_movie.dart';
 import 'package:netflix/views/widget/genre_separator.dart';
 import 'package:netflix/views/widget/section_home.dart';
@@ -94,7 +94,7 @@ class _HomeState extends State<Home> {
                         Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner?.tmdb?.posterPath}',
+                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.banner?.posterPath}',
                               placeholder: (_, url) => AspectRatio(
                                 aspectRatio: 0.67,
                                 child: Container(
@@ -121,7 +121,7 @@ class _HomeState extends State<Home> {
                                       Column(
                                         children: [
                                           Text(
-                                            data.banner?.tmdb?.name ?? '-',
+                                            data.banner?.name ?? '-',
                                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 32),
                                             textAlign: TextAlign.center,
                                           ),
@@ -129,11 +129,11 @@ class _HomeState extends State<Home> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: List.generate(
-                                              data.banner?.tmdb?.genres?.length ?? 0,
+                                              data.banner?.genres?.length ?? 0,
                                               (index) => Row(
                                                 children: [
-                                                  Text(data.banner?.tmdb?.genres?[index].name ?? '-'),
-                                                  if (index != data.banner!.tmdb!.genres!.length - 1) const GenreSeparator(),
+                                                  Text(data.banner?.genres?[index].name ?? '-'),
+                                                  if (index != data.banner!.genres!.length - 1) const GenreSeparator(),
                                                 ],
                                               ),
                                             ),
@@ -245,7 +245,7 @@ class _HomeState extends State<Home> {
             if (_c.status.isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else {
-              List<Movie> data = _c.movies;
+              List<Tmdb> data = _c.movies;
               return Stack(
                 children: [
                   Positioned(
@@ -260,7 +260,7 @@ class _HomeState extends State<Home> {
                         Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.tmdb?.posterPath}',
+                              imageUrl: 'https://image.tmdb.org/t/p/w500/${data.first.posterPath}',
                               placeholder: (_, url) => AspectRatio(
                                 aspectRatio: 0.67,
                                 child: Container(
@@ -287,7 +287,7 @@ class _HomeState extends State<Home> {
                                       Column(
                                         children: [
                                           Text(
-                                            data.first.tmdb?.name ?? data.first.title!,
+                                            data.first.name ?? '--',
                                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 32),
                                             textAlign: TextAlign.center,
                                           ),
@@ -295,11 +295,11 @@ class _HomeState extends State<Home> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: List.generate(
-                                              data.first.tmdb?.genres?.length ?? 0,
+                                              data.first.genres?.length ?? 0,
                                               (index) => Row(
                                                 children: [
-                                                  Text(data.first.tmdb!.genres![index].name!),
-                                                  if (index != data.first.tmdb!.genres!.length - 1) const GenreSeparator(),
+                                                  Text(data.first.genres![index].name!),
+                                                  if (index != data.first.genres!.length - 1) const GenreSeparator(),
                                                 ],
                                               ),
                                             ),
@@ -348,7 +348,7 @@ class _HomeState extends State<Home> {
                               ),
                               const SizedBox(height: 15),
                               Builder(builder: (context) {
-                                List<Movie> display = _c.movies.sublist(1, _c.movies.length);
+                                List<Tmdb> display = _c.movies.sublist(1, _c.movies.length);
                                 return GridView.count(
                                   // controller: _search,
                                   padding: const EdgeInsets.all(15),
@@ -359,7 +359,7 @@ class _HomeState extends State<Home> {
                                   crossAxisSpacing: 0,
                                   childAspectRatio: 9 / 13,
                                   children: List.generate(display.length, (index) {
-                                    Movie movie = display[index];
+                                    Tmdb movie = display[index];
                                     return CardMovie(movie: movie, noMargin: true);
                                   }),
                                 );

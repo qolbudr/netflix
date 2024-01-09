@@ -7,7 +7,7 @@ import 'package:netflix/constant.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:netflix/controllers/detail_controller.dart';
 import 'package:netflix/controllers/services/api_services.dart';
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 import 'package:netflix/views/pages/player.dart';
 import 'package:netflix/views/widget/episode_section.dart';
 import 'package:netflix/views/widget/media_section.dart';
@@ -26,7 +26,7 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
   final DetailController _c = Get.put(DetailController());
-  final Movie data = Get.arguments;
+  final Tmdb data = Get.arguments;
   final ApiServices _apiServices = ApiServices();
   String? _url;
   InAppWebViewController? _webViewController;
@@ -41,14 +41,14 @@ class _DetailState extends State<Detail> {
   void initState() {
     super.initState();
     setState(() {
-      season = data.season?.toInt() ?? 0;
+      season = data.numberOfSeasons?.toInt() ?? 0;
       Future.microtask(
         () {
-          if (data.series ?? false) {
-            _c.getEpisode(data.tmdb?.id ?? 0, season);
+          if (data.numberOfSeasons != null) {
+            _c.getEpisode(data.id ?? 0, season);
           }
 
-          _c.getSubtitlePath(data.tmdb?.externalIds?.imdbId ?? '');
+          _c.getSubtitlePath(data.externalIds?.imdbId ?? '');
         },
       );
     });
@@ -190,7 +190,7 @@ class _DetailState extends State<Detail> {
                                                 subpathLoading = true;
                                                 selectedPath = e.name;
                                               });
-                                              await _c.getSubtitleRawData(data.tmdb?.externalIds?.imdbId ?? '', e.path ?? '');
+                                              await _c.getSubtitleRawData(data.externalIds?.imdbId ?? '', e.path ?? '');
                                               sS(() => subpathLoading = false);
                                             },
                                             title: Text(e.name ?? ''),
@@ -257,7 +257,7 @@ class _DetailState extends State<Detail> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ...(data.tmdb?.seasons ?? []).map(
+                    ...(data.seasons ?? []).map(
                       (e) => Column(
                         children: [
                           ListTile(
@@ -301,7 +301,7 @@ class _DetailState extends State<Detail> {
                       image: DecorationImage(
                         opacity: 0.3,
                         image: CachedNetworkImageProvider(
-                          'https://image.tmdb.org/t/p/w500/${data.tmdb?.backdropPath}',
+                          'https://image.tmdb.org/t/p/w500/${data.backdropPath}',
                         ),
                       ),
                     ),
@@ -367,7 +367,7 @@ class _DetailState extends State<Detail> {
                       ),
                     ),
                   ),
-                  if (data.series ?? false)
+                  if (data.numberOfSeasons != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: TextFormField(
@@ -380,7 +380,7 @@ class _DetailState extends State<Detail> {
                               season = seasonNumber;
                             });
 
-                            await _c.getEpisode(data.tmdb?.id ?? 0, season);
+                            await _c.getEpisode(data.id ?? 0, season);
                           }
                         },
                         initialValue: 'Season $season',
@@ -398,7 +398,7 @@ class _DetailState extends State<Detail> {
                     ),
                   const SizedBox(height: 20),
                   DefaultTabController(
-                    length: data.series ?? false ? 3 : 2,
+                    length: data.numberOfSeasons != null ? 3 : 2,
                     child: Column(
                       children: [
                         TabBar(
@@ -407,14 +407,14 @@ class _DetailState extends State<Detail> {
                             borderSide: BorderSide(color: primaryColor, width: 2),
                             insets: const EdgeInsets.only(bottom: 45),
                           ),
-                          tabs: [if (data.series ?? false) const Tab(text: 'Episodes'), const Tab(text: 'Trailers & More'), const Tab(text: 'Collections')],
+                          tabs: [if (data.numberOfSeasons != null) const Tab(text: 'Episodes'), const Tab(text: 'Trailers & More'), const Tab(text: 'Collections')],
                         ),
                         SizedBox(
                           width: double.infinity,
                           height: 300,
                           child: TabBarView(
                             children: [
-                              if (data.series ?? false) EpisodeSection(data: data, episodes: _c.episode, play: _playMovie),
+                              if (data.numberOfSeasons != null) EpisodeSection(data: data, episodes: _c.episode, play: _playMovie),
                               TrailerSection(data: data, play: _play),
                               MediaSection(data: data),
                             ],

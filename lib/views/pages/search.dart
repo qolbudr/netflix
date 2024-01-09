@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:netflix/constant.dart';
 import 'package:netflix/controllers/home_controller.dart';
 import 'package:netflix/controllers/search_controller.dart' as base;
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 import 'package:netflix/views/widget/card_movie.dart';
 import 'package:netflix/views/widget/section_newest.dart';
 import 'package:remixicon/remixicon.dart';
@@ -186,7 +186,7 @@ class _SearchState extends State<Search> {
                           crossAxisSpacing: 0,
                           childAspectRatio: 9 / 13,
                           children: List.generate(_c.search.length, (index) {
-                            Movie movie = _c.search[index];
+                            Tmdb movie = _c.search[index];
                             return CardMovie(movie: movie, noMargin: true);
                           }),
                         ),

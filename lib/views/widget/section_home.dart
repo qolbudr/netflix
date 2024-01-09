@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
-import "package:netflix/models/movie_model.dart";
+import "package:netflix/models/tmdb_model.dart";
 import "package:netflix/views/widget/card_movie.dart";
 
 class SectionHome extends StatelessWidget {
   const SectionHome({super.key, required this.data, required this.title});
-  final List<Movie> data;
+  final List<Tmdb> data;
   final String title;
 
   @override

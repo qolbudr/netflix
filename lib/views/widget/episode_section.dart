@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:netflix/models/episode_model.dart';
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 
 class EpisodeSection extends StatelessWidget {
   const EpisodeSection({super.key, required this.data, required this.episodes, required this.play});
   final List<Episodes> episodes;
   final Function({int? episode}) play;
-  final Movie data;
+  final Tmdb data;
 
   @override
   Widget build(BuildContext context) {

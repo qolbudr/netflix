@@ -1,11 +1,11 @@
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 import 'package:remixicon/remixicon.dart';
 
 class MovieDetailHeader extends StatelessWidget {
   const MovieDetailHeader({super.key, required this.data, required this.onTap, required this.enableSubtitle});
-  final Movie data;
+  final Tmdb data;
   final Function() onTap;
   final bool enableSubtitle;
 
@@ -23,8 +23,7 @@ class MovieDetailHeader extends StatelessWidget {
             child: SizedBox(
               width: 200,
               child: Text(
-                data.season != null ?
-                '${data.tmdb?.name} - Season ${data.season}' : '${data.tmdb?.name}',
+                '${data.name}',
                 style: const TextStyle(fontSize: 16),
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

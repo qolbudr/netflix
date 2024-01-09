@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:netflix/controllers/services/api_services.dart';
 import 'package:netflix/models/home_model.dart';
-import 'package:netflix/models/movie_model.dart';
 import 'package:netflix/models/status_enum.dart';
+import 'package:netflix/models/tmdb_model.dart';
 
 class HomeController extends GetxController {
   static HomeController instance = Get.find();
@@ -11,13 +11,13 @@ class HomeController extends GetxController {
   /* state */
   final Rx<HomeModel?> _data = Rx<HomeModel?>(null);
   final Rx<Status> _status = Rx<Status>(Status.LOADING);
-  final Rx<List<Movie>> _movies  = Rx<List<Movie>>([]);
+  final Rx<List<Tmdb>> _movies  = Rx<List<Tmdb>>([]);
   final Rx<String?> _category = Rx<String?>(null);
 
   /* getter */
   HomeModel? get data => _data.value; 
   Status get status => _status.value; 
-  List<Movie> get movies => _movies.value;
+  List<Tmdb> get movies => _movies.value;
   String? get category => _category.value;
   
 

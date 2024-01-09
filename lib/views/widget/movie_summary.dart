@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
 import 'package:netflix/constant.dart';
-import 'package:netflix/models/movie_model.dart';
+import 'package:netflix/models/tmdb_model.dart';
 import 'package:remixicon/remixicon.dart';
 
 class MovieSummary extends StatelessWidget {
   const MovieSummary({super.key, required this.data, required this.play, required this.isLoading});
-  final Movie data;
+  final Tmdb data;
   final Function({int? episode}) play;
   final bool isLoading;
   @override
@@ -15,7 +15,7 @@ class MovieSummary extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CachedNetworkImage(
-          imageUrl: 'https://image.tmdb.org/t/p/w200/${data.tmdb?.posterPath}',
+          imageUrl: 'https://image.tmdb.org/t/p/w200/${data.posterPath}',
           width: 120,
           placeholder: (_, url) => AspectRatio(
             aspectRatio: 0.71,
@@ -30,12 +30,12 @@ class MovieSummary extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${data.tmdb?.voteCount} Vote',
+              '${data.voteCount} Vote',
               style: const TextStyle(color: Color(0xff46D267)),
             ),
             const SizedBox(width: 15),
             Text(
-              data.tmdb?.firstAirDate == null ? 'N/A' : data.tmdb!.firstAirDate.toString().substring(0, 4),
+              data.firstAirDate == null ? 'N/A' : data.firstAirDate.toString().substring(0, 4),
               style: TextStyle(color: Colors.white.withOpacity(0.4)),
             ),
             const SizedBox(width: 15),
@@ -45,7 +45,7 @@ class MovieSummary extends StatelessWidget {
             ),
             const SizedBox(width: 15),
             Text(
-              data.tmdb?.runtime == null ? 'N/A' : '${data.tmdb!.runtime!.toInt()}min',
+              data.runtime == null ? 'N/A' : '${data.runtime!.toInt()}min',
               style: TextStyle(color: Colors.white.withOpacity(0.4)),
             ),
           ],

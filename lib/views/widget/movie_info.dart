@@ -1,11 +1,10 @@
 import "package:flutter/material.dart";
-import 'package:netflix/models/movie_model.dart';
 import 'package:netflix/models/tmdb_model.dart';
 import 'package:remixicon/remixicon.dart';
 
 class MovieInfo extends StatelessWidget {
   const MovieInfo({super.key, required this.data});
-  final Movie data;
+  final Tmdb data;
   // final MovieDetailModel detail;
 
   @override
@@ -14,12 +13,12 @@ class MovieInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 15),
-        Text(data.tmdb?.overview ?? '-', maxLines: 3),
+        Text(data.overview ?? '-', maxLines: 3),
         const SizedBox(height: 15),
         SizedBox(
           width: double.infinity,
           child: Builder(builder: (_) {
-            List<Cast> cast = (data.tmdb?.credits?.cast ?? []).where((item) => item.knownForDepartment == "Acting").toList();
+            List<Cast> cast = (data.credits?.cast ?? []).where((item) => item.knownForDepartment == "Acting").toList();
             List<Cast> displayCast = cast.sublist(0, cast.length >= 3 ? 3 : cast.length);
             List casts = [];
             for (Cast item in displayCast) {
