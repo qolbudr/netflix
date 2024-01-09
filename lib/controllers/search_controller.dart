@@ -21,8 +21,13 @@ class SearchController extends GetxController {
 
   Future<void> getSearch(Map<String, dynamic> data) async {
     try {
+      _status.value = Status.LOADING;
       final response = await _apiServices.getSearch(data['title'], data['page']);
-      _search.value = [ ...search, ...response ];
+      if (data['page'] == 1) {
+        _search.value = response;
+      } else {
+        _search.value = [...search, ...response];
+      }
       _status.value = Status.SUCCESS;
     } catch (e) {
       _status.value = Status.ERROR;

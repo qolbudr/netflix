@@ -45,6 +45,8 @@ class _PlayerState extends State<Player> {
     final source = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       argument.url,
+      headers: {'range': 'bytes=0-'},
+      videoFormat: argument.url.contains('m3u8') ? BetterPlayerVideoFormat.hls : null,
       placeholder: CachedNetworkImage(imageUrl: 'https://image.tmdb.org/t/p/w500/${argument.movie.backdropPath}'),
       cacheConfiguration: const BetterPlayerCacheConfiguration(useCache: true),
       subtitles: [
@@ -62,24 +64,19 @@ class _PlayerState extends State<Player> {
   @override
   void dispose() {
     _betterPlayerController.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvoked: (didPop) {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitDown,
-          DeviceOrientation.portraitUp,
-          DeviceOrientation.landscapeRight,
-          DeviceOrientation.landscapeLeft,
-        ]);
-        Navigator.popUntil(context, (route) => route.settings.name == "/detail");
-      },
-      child: Material(
-        child: BetterPlayer(controller: _betterPlayerController),
-      ),
+    return Material(
+      child: BetterPlayer(controller: _betterPlayerController),
     );
   }
 }

@@ -2,12 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:netflix/models/episode_model.dart';
 import 'package:netflix/models/home_model.dart';
+import 'package:netflix/models/source_model.dart';
 import 'package:netflix/models/subtitle_path_model.dart';
 import 'package:netflix/models/tmdb_model.dart';
 
 class ApiServices {
-  static String baseURL = 'https://netflix-be-six.vercel.app/api';
-  
+  static String baseURL = 'https://as-netflix.vercel.app/api';
+
   Future<HomeModel> getHome() async {
     try {
       final response = await http.get(Uri.parse("$baseURL/home"));
@@ -111,37 +112,21 @@ class ApiServices {
     }
   }
 
-  // Future<Map<String, dynamic>> getPlayer(String link, String? episode) async {
-  //   try {
-  //     Response response;
+  Future<List<SourceModel>> getSources({String? imdb, num? season, num? episode}) async {
+    try {
+      String url = "$baseURL/link?imdb=$imdb";
+      if (season != null) url += "&season=$season&episode=$episode";
 
-  //     if (episode == null) {
-  //       response = await http.get(Uri.parse("$baseURL/link?link=$link"));
-  //     } else {
-  //       response = await http.get(Uri.parse("$baseURL/link?link=$link&episode=$episode"));
-  //     }
+      final response = await http.get(Uri.parse(url));
 
-  //     if (response.statusCode == 200) {
-  //       Map<String, dynamic> data = jsonDecode(response.body);
-
-  //       final newResponse = await http.get(Uri.parse(data['link']), headers: {
-  //         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  //       });
-
-  //       final responseNew = await http.post(
-  //         Uri.parse("$baseURL/data"),
-  //         headers: {'Content-type': 'application/json'},
-  //         body: jsonEncode({"data": newResponse.body}),
-  //       );
-
-  //       log(responseNew.body);
-
-  //       return jsonDecode(responseNew.body);
-  //     } else {
-  //       throw Exception('Maaf server sedang sibuk');
-  //     }
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        return data.map((e) => SourceModel.fromJson(e)).toList();
+      } else {
+        throw Exception('Maaf server sedang sibuk');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

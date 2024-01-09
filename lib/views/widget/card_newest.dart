@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:netflix/constant.dart';
 import 'package:netflix/models/tmdb_model.dart';
 import 'package:remixicon/remixicon.dart';
@@ -11,7 +12,7 @@ class CardNewest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/detail', arguments: movie),
+      onTap: () => Get.toNamed('/detail', arguments: movie),
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
         child: Row(

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:netflix/constant.dart';
 import 'package:netflix/models/tmdb_model.dart';
 
@@ -11,7 +12,7 @@ class CardMovie extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/detail', arguments: movie),
+      onTap: () => Get.toNamed('/detail', arguments: movie),
       child: Container(
         margin: EdgeInsets.only(right: noMargin != null ? 0 : 10),
         child: ClipRRect(
