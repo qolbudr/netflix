@@ -53,7 +53,7 @@ class MovieSummary extends StatelessWidget {
         const SizedBox(height: 30),
         ElevatedButton(
           style: defaultButton,
-          onPressed: play,
+          onPressed: () => data.numberOfSeasons != null ? play(episode: 1) : play(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

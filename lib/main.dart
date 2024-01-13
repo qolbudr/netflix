@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
       theme: themeData,
       home: const SplashScreen(),
       getPages: [
-        GetPage(name: '/root', page: () => const Root()),
-        GetPage(name: '/detail', page: () => const Detail()),
-        GetPage(name: '/player', page: () => const Player()),
+        GetPage(name: '/root', page: () => const Root(), transition: Transition.cupertino),
+        GetPage(name: '/detail', page: () => const Detail(), transition: Transition.cupertino),
+        GetPage(name: '/player', page: () => const Player(), transition: Transition.cupertino),
       ],
     );
   }

@@ -27,6 +27,8 @@ class CardNewest extends StatelessWidget {
                   child: Image.asset(
                     'assets/images/placeholder.png',
                     width: 120,
+                    height: 68,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 placeholder: (_, url) => AspectRatio(

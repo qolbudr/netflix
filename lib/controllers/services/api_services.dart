@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:netflix/models/episode_model.dart';
 import 'package:netflix/models/home_model.dart';
+import 'package:netflix/models/item_model.dart';
 import 'package:netflix/models/source_model.dart';
 import 'package:netflix/models/subtitle_path_model.dart';
-import 'package:netflix/models/tmdb_model.dart';
 
 class ApiServices {
   static String baseURL = 'https://as-netflix.vercel.app/api';
@@ -41,15 +41,15 @@ class ApiServices {
     }
   }
 
-  Future<List<Tmdb>> getSearch(String title, int page) async {
+  Future<List<ItemModel>> getSearch(String title, int page) async {
     try {
       final response = await http.get(Uri.parse("$baseURL/search?keyword=$title&page=$page"));
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
-        List<Tmdb> result = <Tmdb>[];
+        List<ItemModel> result = <ItemModel>[];
         for (Map<String, dynamic> v in data) {
-          result.add(Tmdb.fromJson(v));
+          result.add(ItemModel.fromJson(v));
         }
 
         return result;
@@ -61,15 +61,15 @@ class ApiServices {
     }
   }
 
-  Future<List<Tmdb>> getCategory(String category, int page) async {
+  Future<List<ItemModel>> getCategory(String category, int page) async {
     try {
       final response = await http.get(Uri.parse("$baseURL/genre?genre=$category&page=$page"));
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
-        List<Tmdb> result = <Tmdb>[];
+        List<ItemModel> result = <ItemModel>[];
         for (Map<String, dynamic> v in data) {
-          result.add(Tmdb.fromJson(v));
+          result.add(ItemModel.fromJson(v));
         }
 
         return result;

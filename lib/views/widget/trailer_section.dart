@@ -12,7 +12,7 @@ class TrailerSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      itemCount: data .videos!.results!.length,
+      itemCount: data.videos!.results!.length,
       itemBuilder: (context, index) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -20,7 +20,14 @@ class TrailerSection extends StatelessWidget {
             children: [
               CachedNetworkImage(
                 width: double.infinity,
-                imageUrl: 'https://img.youtube.com/vi/${data.videos!.results![index].key!}/mqdefault.jpg',
+                imageUrl:
+                    'https://img.youtube.com/vi/${data.videos!.results![index].key!}/mqdefault.jpg',
+                placeholder: (context, url) => Image.asset(
+                  'assets/images/placeholder.png',
+                  width: double.infinity,
+                  height: 180,
+                  fit: BoxFit.cover,
+                ),
               ),
               Positioned(
                 top: 0,
@@ -28,8 +35,12 @@ class TrailerSection extends StatelessWidget {
                 right: 0,
                 bottom: 0,
                 child: GestureDetector(
-                  onTap: () => play('https://www.youtube.com/embed/${data.videos!.results![index].key!}'),
-                  child: Container(color: Colors.black.withOpacity(0.7), child: const Center(child: Icon(Remix.play_circle_line, size: 50))),
+                  onTap: () => play(
+                      'https://www.youtube.com/embed/${data.videos!.results![index].key!}'),
+                  child: Container(
+                      color: Colors.black.withOpacity(0.7),
+                      child: const Center(
+                          child: Icon(Remix.play_circle_line, size: 50))),
                 ),
               )
             ],

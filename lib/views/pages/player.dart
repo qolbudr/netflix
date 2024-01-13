@@ -1,5 +1,4 @@
 import 'package:better_player/better_player.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
@@ -47,7 +46,6 @@ class _PlayerState extends State<Player> {
       argument.url,
       headers: {'range': 'bytes=0-'},
       videoFormat: argument.url.contains('m3u8') ? BetterPlayerVideoFormat.hls : null,
-      placeholder: CachedNetworkImage(imageUrl: 'https://image.tmdb.org/t/p/w500/${argument.movie.backdropPath}'),
       cacheConfiguration: const BetterPlayerCacheConfiguration(useCache: true),
       subtitles: [
         BetterPlayerSubtitlesSource(

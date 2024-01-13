@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
-import "package:netflix/models/tmdb_model.dart";
+import "package:netflix/models/item_model.dart";
 import "package:netflix/views/widget/card_movie.dart";
 
 class SectionHome extends StatelessWidget {
   const SectionHome({super.key, required this.data, required this.title});
-  final List<Tmdb> data;
+  final List<ItemModel> data;
   final String title;
 
   @override
@@ -25,7 +25,7 @@ class SectionHome extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: List.generate(data.length, (index) => CardMovie(movie: data[index])),
+                children: List.generate(data.length, (index) => CardMovie(movie: data[index].tmdb!)),
               ),
             )
           ],

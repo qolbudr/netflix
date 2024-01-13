@@ -188,7 +188,7 @@ class _SearchState extends State<Search> {
                             crossAxisSpacing: 0,
                             childAspectRatio: 9 / 13,
                             children: List.generate(_c.search.length, (index) {
-                              Tmdb movie = _c.search[index];
+                              Tmdb movie = _c.search[index].tmdb!;
                               return CardMovie(movie: movie, noMargin: true);
                             }),
                           ),

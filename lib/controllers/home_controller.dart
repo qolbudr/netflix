@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:netflix/controllers/services/api_services.dart';
 import 'package:netflix/models/home_model.dart';
+import 'package:netflix/models/item_model.dart';
 import 'package:netflix/models/status_enum.dart';
-import 'package:netflix/models/tmdb_model.dart';
 
 class HomeController extends GetxController {
   static HomeController instance = Get.find();
@@ -11,13 +11,13 @@ class HomeController extends GetxController {
   /* state */
   final Rx<HomeModel?> _data = Rx<HomeModel?>(null);
   final Rx<Status> _status = Rx<Status>(Status.LOADING);
-  final Rx<List<Tmdb>> _movies  = Rx<List<Tmdb>>([]);
+  final Rx<List<ItemModel>> _movies  = Rx<List<ItemModel>>([]);
   final Rx<String?> _category = Rx<String?>(null);
 
   /* getter */
   HomeModel? get data => _data.value; 
   Status get status => _status.value; 
-  List<Tmdb> get movies => _movies.value;
+  List<ItemModel> get movies => _movies.value;
   String? get category => _category.value;
   
 
@@ -37,7 +37,7 @@ class HomeController extends GetxController {
       _status.value = Status.LOADING;
       final response = await _apiServices.getCategory(category!.toLowerCase(), page);
       _movies.value = [...movies, ...response];
-      _status.value = Status.LOADING;
+      _status.value = Status.SUCCESS;
     } catch (e) {
       _status.value = Status.ERROR;
       rethrow;

@@ -83,7 +83,6 @@ class _DetailState extends State<Detail> {
     }
 
     if (response.isNotEmpty) {
-      print(response.first.file!);
       argument = PlayerArgument(url: response.first.file!, subtitle: _c.subtitleRaw, movie: data);
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeRight,
